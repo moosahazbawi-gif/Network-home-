@@ -1,1 +1,20 @@
 <a href="request.html">طلب خدمة</a>
+
+
+.footer {
+  background: #111827;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin-top: 40px;
+}
+
+.footer a {
+  color: #38bdf8;
+  margin: 0 10px;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: white;
+}
