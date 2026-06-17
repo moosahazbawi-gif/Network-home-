@@ -1,80 +1,20 @@
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-  <meta charset="UTF-8">
-  <title>طلب خدمة - Network Home</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-
-<nav>
-  <a href="index.html">الرئيسية</a>
-  <a href="services.html">الخدمات</a>
-  <a href="contact.html">تواصل</a>
-  <a href="request.html">طلب خدمة</a>
-</nav>
-
 <h1>طلب خدمة</h1>
 
-<form>
-  <label>الاسم:</label><br>
-  <input type="text" placeholder="اسمك"><br><br>
+<form action="https://formsubmit.co/youremail@gmail.com" method="POST">
 
-  <label>رقم الهاتف:</label><br>
-  <input type="text" placeholder="09xxxxxxxx"><br><br>
+  <input type="text" name="name" placeholder="الاسم" required><br><br>
 
-  <label>نوع الخدمة:</label><br>
-  <select>
-    <option>شبكات وإنترنت</option>
-    <option>صيانة أجهزة</option>
-    <option>برمجيات وأنظمة</option>
-    <option>خوادم وسيرفرات</option>
-    <option>تركيب معدات</option>
+  <input type="text" name="phone" placeholder="رقم الهاتف" required><br><br>
+
+  <select name="service">
+    <option>شبكات</option>
+    <option>أنظمة</option>
+    <option>سيرفرات</option>
+    <option>برمجيات</option>
   </select><br><br>
 
-  <label>تفاصيل الطلب:</label><br>
-  <textarea placeholder="اشرح المشكلة أو الطلب"></textarea><br><br>
+  <textarea name="message" placeholder="تفاصيل الطلب"></textarea><br><br>
 
   <button type="submit">إرسال الطلب</button>
+
 </form>
-
-</body>
-</html>
-
-
-
-<footer class="footer">
-  <p>Network Home © 2026</p>
-
-  <a href="contact.html">تواصل معنا</a>
-  <a href="services.html">الخدمات</a>
-  <a href="request.html">طلب خدمة</a>
-
-  <br><br>
-
-  <a href="https://wa.me/989000000000" target="_blank">
-    💬 واتساب
-  </a>
-</footer>
-<footer class="footer">
-
-  <p>Network Home © 2026</p>
-
-  <div class="social">
-
-    <a href="https://wa.me/989000000000" target="_blank">💬 WhatsApp</a>
-
-    <a href="https://discord.com" target="_blank">🎮 Discord</a>
-
-    <a href="https://youtube.com" target="_blank">▶ YouTube</a>
-
-    <a href="https://facebook.com" target="_blank">📘 Facebook</a>
-
-    <a href="https://github.com" target="_blank">🐙 GitHub</a>
-
-    <a href="https://microsoft.com" target="_blank">🪟 Microsoft</a>
-
-  </div>
-
-</footer>
