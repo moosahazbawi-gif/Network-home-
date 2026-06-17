@@ -18,3 +18,19 @@
 .footer a:hover {
   color: white;
 }
+
+.social {
+  margin-top: 10px;
+}
+
+.social a {
+  display: inline-block;
+  margin: 6px 10px;
+  color: #38bdf8;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.social a:hover {
+  color: white;
+}
