@@ -1,20 +1,21 @@
 <h1>طلب خدمة</h1>
 
-<form action="https://formsubmit.co/youremail@gmail.com" method="POST">
+<form onsubmit="sendToWhatsApp(); return false;">
 
-  <input type="text" name="name" placeholder="الاسم" required><br><br>
+  <input type="text" id="name" placeholder="الاسم" required><br><br>
 
-  <input type="text" name="phone" placeholder="رقم الهاتف" required><br><br>
+  <input type="text" id="phone" placeholder="رقم الهاتف" required><br><br>
 
-  <select name="service">
+  <select id="service">
     <option>شبكات</option>
     <option>أنظمة</option>
     <option>سيرفرات</option>
     <option>برمجيات</option>
+    <option>تركيب معدات</option>
   </select><br><br>
 
-  <textarea name="message" placeholder="تفاصيل الطلب"></textarea><br><br>
+  <textarea id="message" placeholder="تفاصيل الطلب"></textarea><br><br>
 
-  <button type="submit">إرسال الطلب</button>
+  <button type="submit">إرسال عبر واتساب</button>
 
 </form>
