@@ -5,6 +5,20 @@ background:#0f172a;
 color:white;
 }
 
+.brand-box{
+width:max-content;
+margin:40px auto;
+padding:20px 50px;
+font-size:48px;
+font-weight:900;
+letter-spacing:5px;
+color:white;
+border:2px solid #38bdf8;
+border-radius:20px;
+background:rgba(15,23,42,.7);
+box-shadow:0 0 25px rgba(56,189,248,.4);
+}
+
 i{
 margin-left:6px;
 color:#38bdf8;
