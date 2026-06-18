@@ -19,7 +19,7 @@ function submitRequest(e) {
   requests.push(request);
   localStorage.setItem("requests", JSON.stringify(requests));
 
-  alert("تم إرسال الطلب بنجاح ✔️");
+  alert("درخواست با موفقیت انجام شد ✔️");
 
   document.querySelector("form").reset();
 }
