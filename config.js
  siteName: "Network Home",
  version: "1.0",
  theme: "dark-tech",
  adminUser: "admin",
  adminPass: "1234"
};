@@ -3,5 +3,5 @@ const CONFIG = {
   version: "1.0",
   theme: "dark-tech",
   adminUser: "admin",
-  adminPass: "1234"
+  adminPass: "1993"
 };
