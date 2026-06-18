@@ -1,0 +1,7 @@
+const CONFIG = {
+  siteName: "Network Home",
+  version: "1.0",
+  theme: "dark-tech",
+  adminUser: "admin",
+  adminPass: "1234"
+};
