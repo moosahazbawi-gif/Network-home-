@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Contact</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h2>Request Service</h2>
+
+<form onsubmit="submitRequest(event)">
+  <input id="name" placeholder="Name"><br>
+  <input id="phone" placeholder="Phone"><br>
+
+  <select id="service">
+    <option>Network</option>
+    <option>Server</option>
+  </select><br>
+
+  <textarea id="message" placeholder="Message"></textarea><br>
+
+  <button type="submit">Send</button>
+</form>
+
+<script src="script.js"></script>
+
+</body>
+</html>
