@@ -5,6 +5,18 @@ background:#0f172a;
 color:white;
 }
 
+i{
+margin-left:6px;
+color:#38bdf8;
+}
+
+.card i{
+font-size:28px;
+margin-bottom:10px;
+display:block;
+}
+
+
 /* NAVBAR */
 nav{
 background:#111827;
