@@ -1,26 +1,64 @@
-<h1>ثبت درخواست یا مشاوره</h1>
-
-<form onsubmit="sendToWhatsApp(); return false;">
-
-  <input type="text" id="name" placeholder=نام" required><br><br>
-
-  <input type="text" id="phone" placeholder="شماره تلفن" required><br><br>
-
+<!DOCTYPE html>
+<html lang="fa">
 <head>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <title>سیستم درخواست | Network Home</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 
-<select id="service">
-  <option>شبکه‌ها</option>
-  <option>سیستم‌ها</option>
-  <option>سرورها</option>
-  <option>نرم‌افزارها</option>
-  <option>نصب تجهیزات</option>
-</select>
-<br><br>
+<body>
 
-  <textarea id="message" placeholder="جزئیات درخواست"></textarea><br><br>
+<nav class="navbar">
+  <div class="logo">NETWORK<span>HOME</span></div>
+  <ul>
+    <li><a href="index.html">خانه</a></li>
+    <li><a href="services.html">خدمات</a></li>
+    <li><a href="contact.html">ارتباط</a></li>
+  </ul>
+</nav>
 
-  <button type="submit">در واتس آپ پیام دهید</button>
+<section class="hero" style="height:40vh;">
+  <h1>سیستم ثبت درخواست</h1>
+  <p>ثبت و مدیریت درخواست‌های مشتریان</p>
+</section>
 
-</form>
+<section class="contact">
+
+  <div class="grid">
+
+    <!-- FORM -->
+    <div class="card">
+      <h2>ثبت درخواست جدید</h2>
+
+      <form onsubmit="submitRequest(event)">
+
+        <input id="name" type="text" placeholder="نام" required>
+        <input id="phone" type="text" placeholder="شماره تماس" required>
+
+        <select id="service" required>
+          <option value="">انتخاب خدمت</option>
+          <option>شبکه</option>
+          <option>سرور</option>
+          <option>پشتیبانی فنی</option>
+          <option>طراحی سایت</option>
+        </select>
+
+        <textarea id="message" rows="4" placeholder="توضیحات..." required></textarea>
+
+        <button class="btn primary" type="submit">ارسال درخواست</button>
+      </form>
+    </div>
+
+    <!-- INFO -->
+    <div class="card">
+      <h2>سیستم مدیریت</h2>
+      <p>تمام درخواست‌ها ذخیره می‌شوند و قابل مشاهده در پنل مدیریت هستند.</p>
+    </div>
+
+  </div>
+
+</section>
+
+<script src="script.js"></script>
+</body>
+</html>
