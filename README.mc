@@ -7,7 +7,6 @@ A professional tech services platform.
 - Server Management
 - IT Support
 - CRM System (Local Storage)
-
 ## Structure
 HTML + CSS + Vanilla JS
 
