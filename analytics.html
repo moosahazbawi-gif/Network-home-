@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Analytics</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<section class="container">
+
+<h1>گزارش سیستم</h1>
+
+<div class="grid">
+
+  <div class="card">
+    <h2 id="total">0</h2>
+    <p>تعداد درخواست ها</p>
+  </div>
+
+  <div class="card">
+    <h2>24/7</h2>
+    <p>پشتیبانی فنی</p>
+  </div>
+
+  <div class="card">
+    <h2>99%</h2>
+    <p>پایداری سیستم</p>
+  </div>
+
+</div>
+
+</section>
+
+<script>
+let data = JSON.parse(localStorage.getItem("requests")) || [];
+document.getElementById("total").innerText = data.length;
+</script>
+
+</body>
+</html>
