@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>CRM Dashboard | Network Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    .toolbar {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:20px;
+    }
+
+    .btn-small {
+      padding:8px 12px;
+      border-radius:8px;
+      border:none;
+      cursor:pointer;
+      background:linear-gradient(135deg,#00c6ff,#0072ff);
+      color:white;
+    }
+
+    .danger {
+      background:rgba(255,0,0,0.2);
+      border:1px solid rgba(255,0,0,0.4);
+    }
+  </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+  <div class="logo">CRM<span>NH</span></div>
+
+  <ul>
+    <li><a href="index.html">خانه</a></li>
+    <li><a href="services.html">خدمات</a></li>
+    <li><a href="contact.html">ارتباط</a></li>
+  </ul>
+</nav>
+
+<section class="hero" style="height:35vh;">
+  <div class="hero-content">
+    <h1>داشبورد مدیریت درخواست‌ها</h1>
+    <p>مشاهده، مدیریت و حذف درخواست‌های مشتریان</p>
+  </div>
+</section>
+
+<section>
+
+  <div class="card">
+
+    <div class="toolbar">
+      <h2>لیست درخواست‌ها</h2>
+      <button class="btn-small danger" onclick="clearAll()">حذف همه</button>
+    </div>
+
+    <div id="list"></div>
+
+  </div>
+
+</section>
+
+<script>
+function loadRequests() {
+  let requests = JSON.parse(localStorage.getItem("requests")) || [];
+  let list = document.getElementById("list");
+
+  if (requests.length === 0) {
+    list.innerHTML = "<p>هیچ درخواستی ثبت نشده است</p>";
+    return;
+  }
+
+  list.innerHTML = requests.map((r, index) => `
+    <div class="card" style="margin:10px 0;">
+      <p><b>#ID:</b> ${r.id}</p>
+      <p><b>نام:</b> ${r.name}</p>
+      <p><b>شماره:</b> ${r.phone}</p>
+      <p><b>خدمت:</b> ${r.service}</p>
+      <p><b>توضیحات:</b> ${r.message}</p>
+      <p><b>تاریخ:</b> ${r.date}</p>
+
+      <button class="btn-small danger" onclick="deleteRequest(${r.id})">حذف</button>
+    </div>
+  `).join("");
+}
+
+function deleteRequest(id) {
+  let requests = JSON.parse(localStorage.getItem("requests")) || [];
+  requests = requests.filter(r => r.id !== id);
+  localStorage.setItem("requests", JSON.stringify(requests));
+  loadRequests();
+}
+
+function clearAll() {
+  if (confirm("هل أنت متأكد من حذف كل الطلبات؟")) {
+    localStorage.removeItem("requests");
+    loadRequests();
+  }
+}
+
+loadRequests();
+</script>
+
+</body>
+</html>
