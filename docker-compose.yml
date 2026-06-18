@@ -2,18 +2,32 @@ version: "3.8"
 
 services:
 
-  backend:
-    build:
-      context: .
-      dockerfile: Dockerfile.backend
-    ports:
-      - "3000:3000"
-
-  frontend:
+  nginx:
     image: nginx:alpine
-    volumes:
-      - ./frontend:/usr/share/nginx/html
     ports:
       - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - chirpstack
 
-docker-compose up -d
+  postgres:
+    image: postgres:14
+    environment:
+      POSTGRES_PASSWORD: chirpstack
+      POSTGRES_USER: chirpstack
+      POSTGRES_DB: chirpstack
+    restart: always
+
+  redis:
+    image: redis:7
+    restart: always
+
+  chirpstack:
+    image: chirpstack/chirpstack:latest
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - redis
+    restart: always
