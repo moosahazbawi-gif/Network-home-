@@ -1,16 +1,25 @@
-function sendToWhatsApp() {
-  let name = document.getElementById("name").value;
-  let phone = document.getElementById("phone").value;
-  let service = document.getElementById("service").value;
-  let message = document.getElementById("message").value;
-let text =
-`درخواست جدید سرویس:
-👤 نام و نام خانوادگی: ${name}
-📱 شماره تماس: ${phone}
-🛠 خدمات انتخابی: ${service}
-📝 جزئیات درخواست: ${message}`;
+function submitRequest(e) {
+  e.preventDefault();
 
-  let url = "https://wa.me/+989050780371?text=" + encodeURIComponent(text);
+  const name = document.querySelector("#name").value;
+  const phone = document.querySelector("#phone").value;
+  const service = document.querySelector("#service").value;
+  const message = document.querySelector("#message").value;
 
-  window.open(url, "_blank");
+  const request = {
+    id: Date.now(),
+    name,
+    phone,
+    service,
+    message,
+    date: new Date().toLocaleString()
+  };
+
+  let requests = JSON.parse(localStorage.getItem("requests")) || [];
+  requests.push(request);
+  localStorage.setItem("requests", JSON.stringify(requests));
+
+  alert("تم إرسال الطلب بنجاح ✔️");
+
+  document.querySelector("form").reset();
 }
