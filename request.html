@@ -1,25 +1,26 @@
-<h1>طلب خدمة</h1>
+<h1>ثبت درخواست یا مشاوره</h1>
 
 <form onsubmit="sendToWhatsApp(); return false;">
 
-  <input type="text" id="name" placeholder="الاسم" required><br><br>
+  <input type="text" id="name" placeholder=نام" required><br><br>
 
-  <input type="text" id="phone" placeholder="رقم الهاتف" required><br><br>
+  <input type="text" id="phone" placeholder="شماره تلفن" required><br><br>
 
 <head>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
-  <select id="service">
-    <option>شبكات</option>
-    <option>أنظمة</option>
-    <option>سيرفرات</option>
-    <option>برمجيات</option>
-    <option>تركيب معدات</option>
-  </select><br><br>
+<select id="service">
+  <option>شبکه‌ها</option>
+  <option>سیستم‌ها</option>
+  <option>سرورها</option>
+  <option>نرم‌افزارها</option>
+  <option>نصب تجهیزات</option>
+</select>
+<br><br>
 
-  <textarea id="message" placeholder="تفاصيل الطلب"></textarea><br><br>
+  <textarea id="message" placeholder="جزئیات درخواست"></textarea><br><br>
 
-  <button type="submit">إرسال عبر واتساب</button>
+  <button type="submit">در واتس آپ پیام دهید</button>
 
 </form>
