@@ -1,79 +1,82 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
-
+<html lang="fa">
 <head>
   <meta charset="UTF-8">
-  <title>- Network Home</title>
+  <title>ارتباط با ما | Network Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
 </head>
 
 <body>
 
-<nav>
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="logo">NETWORK<span>HOME</span></div>
 
-    <a href="index.html">خانه</a>
-    <a href="services.html">خدمات و محصول</a>
-    <a href="request.html">ثبت و درخواست</a>
-    <a href="contact.html">ارتباط با ما</a>
-    <a href="about.html">معرفى</a>
+  <ul>
+    <li><a href="index.html">خانه</a></li>
+    <li><a href="services.html">خدمات</a></li>
+    <li><a href="about.html">درباره</a></li>
+    <li><a href="contact.html">ارتباط</a></li>
+  </ul>
 
+  <a class="nav-btn" href="request.html">شروع پروژه</a>
 </nav>
 
-<h1></h1>
+<!-- HERO -->
+<section class="hero" style="height:50vh;">
+  <div class="hero-content">
+    <h1>ارتباط با ما</h1>
+    <p>ما همیشه آماده پاسخ‌گویی و همکاری با شما هستیم</p>
+  </div>
+</section>
 
-<p>ارتباط با ما، مسیر آموزش و پیشرفت است؛ با ما در ارتباط باشید.</p>
+<!-- CONTACT SECTION -->
+<section class="contact">
 
-<h3> whatsapp </h3>
-<p>
-<a href="https://wa.me/+989050780371" target="_blank">
+  <div class="grid">
 
-</a>
-</p>
+    <!-- FORM -->
+    <div class="card">
+      <h2>ارسال پیام</h2>
 
-<h3>🎮 Discord</h3>
-<p>
-<a href="https://discord.com" target="_blank">
- Discord
-</a>
-</p>
+      <form>
+        <input type="text" placeholder="نام کامل" required>
+        <input type="text" placeholder="شماره تماس" required>
+        <input type="email" placeholder="ایمیل (اختیاری)">
+        <textarea placeholder="پیام شما..." rows="5" required></textarea>
 
-<h3>📘</h3>
-<p>
-<a href="https://facebook.com" target="_blank">
- Facebook
-</a>
-</p>
+        <button type="submit" class="btn primary">ارسال پیام</button>
+      </form>
+    </div>
 
-<h3>▶</h3>
-<p>
-<a href="https://youtube.com" target="_blank">
-YouTube
-</a>
-</p>
+    <!-- INFO -->
+    <div class="card">
+      <h2>اطلاعات تماس</h2>
 
-<h3> GitHub</h3>
-<p>
-<a href="https://github.com" target="_blank">
- GitHub
-</a>
-</p>
+      <p>📍 موقعیت: خدمات آنلاین</p>
+      <p>📞 پشتیبانی: 24/7</p>
+      <p>💬 پاسخ‌گویی سریع و حرفه‌ای</p>
 
-<footer class="footer">
+      <hr style="margin:15px 0; opacity:0.2;">
 
-  <p>Network Home © 2026</p>
+      <p>ارتباط با ما یعنی شروع یک مسیر حرفه‌ای در دنیای فناوری</p>
+    </div>
 
-  <div class="social">
-    <a href="https://wa.me/+989050780371" target="_blank">WhatsApp</a>
-    <a href="https://discord.com" target="_blank">Discord</a>
-    <a href="https://youtube.com" target="_blank">YouTube</a>
-    <a href="https://facebook.com" target="_blank">Facebook</a>
-    <a href="https://github.com" target="_blank">GitHub</a>
-    <a href="https://microsoft.com" target="_blank">Microsoft</a>
   </div>
 
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <h2>منتظر شما هستیم</h2>
+  <p>همین حالا پروژه خود را شروع کنید</p>
+  <a class="btn primary" href="request.html">ثبت درخواست</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© تمامی حقوق محفوظ است - Network Home</p>
 </footer>
 
 </body>
