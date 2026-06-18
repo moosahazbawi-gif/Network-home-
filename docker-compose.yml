@@ -15,3 +15,5 @@ services:
       - ./frontend:/usr/share/nginx/html
     ports:
       - "80:80"
+
+docker-compose up -d
