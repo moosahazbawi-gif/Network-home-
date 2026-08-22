@@ -1,0 +1,108 @@
+:root {
+  color-scheme: light;
+  --bg: #f4f7fb;
+  --panel: #ffffff;
+  --line: #d8e0ea;
+  --text: #17202a;
+  --muted: #5f6b7a;
+  --accent: #1f6feb;
+  --danger: #b42318;
+  --ok: #137333;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+.shell {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 20px;
+}
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+.topbar h1, h2, h3, p { margin: 0; }
+.topbar p { color: var(--muted); margin-top: 4px; }
+.grid { display: grid; gap: 16px; }
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 16px;
+}
+.stack { display: grid; gap: 12px; }
+label { display: grid; gap: 6px; font-weight: 600; }
+input {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: inherit;
+}
+button {
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--accent);
+  color: white;
+  font: inherit;
+  cursor: pointer;
+}
+button.ghost { background: #e9eef5; color: var(--text); }
+.hidden { display: none !important; }
+.message { margin-top: 12px; color: var(--muted); min-height: 1.4em; }
+.split {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.table {
+  display: grid;
+  gap: 10px;
+}
+.row {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 12px;
+  display: grid;
+  gap: 8px;
+}
+.row-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.meta { color: var(--muted); font-size: 0.95rem; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.status { font-weight: 700; }
+.status.completed { color: var(--ok); }
+.status.failed, .status.canceled { color: var(--danger); }
+pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: #f8fafc;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 12px;
+}
+@media (max-width: 860px) {
+  .split { grid-template-columns: 1fr; }
+  .topbar { align-items: flex-start; flex-direction: column; }
+}
