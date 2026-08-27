@@ -1,10 +1,10 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from .tools import TOOL_REGISTRY, run_tool
-from .planner import Planner
+from .engine import Engine
 
-app = FastAPI(title="Panther AI Core", version="0.2.0")
-planner = Planner()
+app = FastAPI(title="Panther AI Core", version="0.3.0")
+engine = Engine()
 
 class ToolRequest(BaseModel):
     arguments: dict = {}
@@ -14,7 +14,7 @@ class ChatRequest(BaseModel):
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "service": "panther-ai-core", "version": "0.2.0"}
+    return {"status": "ok", "service": "panther-ai-core", "version": "0.3.0"}
 
 @app.get("/tools")
 def tools():
@@ -31,7 +31,7 @@ def execute_tool(name: str, request: ToolRequest):
 
 @app.post("/chat")
 def chat(request: ChatRequest):
-    return planner.run(request.prompt)
+    return engine.chat(request.prompt)
 
 def main():
     import uvicorn
