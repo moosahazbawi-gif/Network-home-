@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const pantherGateway = require("./panther-gateway");
 
 const app = express();
 app.use(cors());
@@ -16,4 +17,7 @@ app.get("/api/requests", (req, res) => {
   res.json(data);
 });
 
-app.listen(3000, () => console.log("Server running"));
+// Panther AI integration
+app.use(pantherGateway);
+
+app.listen(3000, () => console.log("Network-home server running on :3000"));
