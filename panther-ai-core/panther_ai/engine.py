@@ -23,16 +23,13 @@ class Engine:
     def chat(self, prompt: str):
         context = self.memory.context()
         tool_name, tool_args = self._select_tool(prompt)
-        tool_result = None
 
         if tool_name:
             try:
-                tool_result = run_tool(tool_name, tool_args)
+                result = run_tool(tool_name, tool_args)
+                context += "\n\nTool result:\n" + json.dumps(result, ensure_ascii=False)
             except Exception as exc:
-                tool_result = {"error": str(exc)}
-
-        if tool_result is not None:
-            context = f"{context}\n\nTool used: {tool_name}\nTool result:\n{json.dumps(tool_result, ensure_ascii=False)}"
+                context += "\n\nTool result:\n" + json.dumps({"error": str(exc)}, ensure_ascii=False)
 
         try:
             answer = self.runtime.generate(prompt, context)
