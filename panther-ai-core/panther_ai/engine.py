@@ -9,29 +9,39 @@ class Engine:
     def __init__(self):
         self.memory = Memory()
         self.runtime = Runtime()
+        self.max_tool_steps = 3
 
     def _select_tool(self, prompt: str):
         text = prompt.lower()
-        if any(word in text for word in ("docker", "كونتينر", "حاوية")):
+        if any(w in text for w in ("docker", "كونتينر", "حاوية")):
             return "docker_ps", {}
-        if any(word in text for word in ("disk", "storage", "filesystem", "قرص", "تخزين", "مساحة")):
+        if any(w in text for w in ("disk", "storage", "filesystem", "قرص", "تخزين", "مساحة")):
             return "disk_usage", {"path": "/"}
-        if any(word in text for word in ("system", "hostname", "kernel", "cpu", "جهاز", "نظام", "معالج")):
+        if any(w in text for w in ("system", "hostname", "kernel", "cpu", "جهاز", "نظام", "معالج")):
             return "system_info", {}
         return None, None
 
+    def _run_tool(self, name, args):
+        if name not in TOOL_REGISTRY:
+            raise ValueError("Tool is not authorized")
+        return run_tool(name, args)
+
     def chat(self, prompt: str):
         context = self.memory.context()
-        tool_name, tool_args = self._select_tool(prompt)
+        tool_name = None
         tool_result = None
-
-        if tool_name:
+        for _ in range(self.max_tool_steps):
+            candidate, args = self._select_tool(prompt)
+            if not candidate or candidate == tool_name:
+                break
+            tool_name = candidate
             try:
-                tool_result = run_tool(tool_name, tool_args)
+                tool_result = self._run_tool(tool_name, args)
                 context += "\n\nTool result:\n" + json.dumps(tool_result, ensure_ascii=False)
             except Exception as exc:
                 tool_result = {"error": str(exc)}
                 context += "\n\nTool result:\n" + json.dumps(tool_result, ensure_ascii=False)
+            break
 
         try:
             answer = self.runtime.generate(prompt, context)
