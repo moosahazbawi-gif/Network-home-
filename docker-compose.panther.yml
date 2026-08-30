@@ -1,0 +1,21 @@
+services:
+  network-home-backend:
+    build: ./backend
+    environment:
+      PANTHER_URL: http://host.docker.internal:8787
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+  network-home-frontend:
+    image: nginx:alpine
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+      - ./nginx.panther.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "8080:80"
+    depends_on:
+      - network-home-backend
+    restart: unless-stopped
