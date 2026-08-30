@@ -12,11 +12,11 @@ class Engine:
 
     def _select_tool(self, prompt: str):
         text = prompt.lower()
-        if any(word in text for word in ("docker", "كونتينر", "حاوية")):
+        if any(word in text for word in ("docker", "container", "containers", "كونتينر", "حاوية", "حاويات")):
             return "docker_ps", {}
-        if any(word in text for word in ("disk", "storage", "filesystem", "قرص", "تخزين", "مساحة")):
+        if any(word in text for word in ("disk", "storage", "filesystem", "space", "قرص", "تخزين", "ملفات", "مساحة")):
             return "disk_usage", {"path": "/"}
-        if any(word in text for word in ("system", "hostname", "kernel", "cpu", "جهاز", "نظام", "معالج")):
+        if any(word in text for word in ("system", "hostname", "kernel", "cpu", "machine", "جهاز", "نظام", "معالج")):
             return "system_info", {}
         return None, None
 
@@ -31,13 +31,19 @@ class Engine:
                 return "Docker يعمل، ولا توجد حاويات قيد التشغيل حاليًا."
             lines = [f"Docker يعمل حاليًا، والحاويات قيد التشغيل: {len(containers)}."]
             for item in containers:
-                lines.append(f"- {item['name']} — {item['image']} — {item['status']}")
+                lines.append(f"- {item.get('name', '?')} — {item.get('image', '?')} — {item.get('status', '?')}")
             return "\n".join(lines)
         if tool_name == "system_info":
             return (
                 f"الجهاز: {result.get('hostname')}، النظام: {result.get('os')}، "
                 f"النواة: {result.get('kernel')}، المعالجات: {result.get('cpu_count')}."
             )
+        if tool_name == "disk_usage":
+            usage = result.get("usage", {})
+            total = usage.get("total", 0)
+            used = usage.get("used", 0)
+            free = usage.get("free", 0)
+            return f"مساحة {result.get('path', '/')} — الإجمالي: {total} بايت، المستخدم: {used} بايت، المتاح: {free} بايت."
         return None
 
     def chat(self, prompt: str):
@@ -66,7 +72,7 @@ class Engine:
         if tool_result is not None:
             refusal_markers = (
                 "لا أستطيع", "ليس لدي القدرة", "لا يمكنني", "لا أملك القدرة",
-                "cannot", "unable", "don't have access"
+                "أعتذر", "cannot", "unable", "don't have access", "do not have access"
             )
             if any(marker in answer.lower() for marker in refusal_markers):
                 fallback = self._grounded_fallback(tool_name, tool_result)
