@@ -11,37 +11,33 @@ class Engine:
         self.runtime = Runtime()
         self.max_tool_steps = 3
 
-    def _select_tool(self, prompt: str):
+    def _select_tools(self, prompt: str):
         text = prompt.lower()
+        tools = []
         if any(w in text for w in ("docker", "كونتينر", "حاوية")):
-            return "docker_ps", {}
+            tools.append(("docker_ps", {}))
         if any(w in text for w in ("disk", "storage", "filesystem", "قرص", "تخزين", "مساحة")):
-            return "disk_usage", {"path": "/"}
+            tools.append(("disk_usage", {"path": "/"}))
         if any(w in text for w in ("system", "hostname", "kernel", "cpu", "جهاز", "نظام", "معالج")):
-            return "system_info", {}
-        return None, None
+            tools.append(("system_info", {}))
+        return tools[:self.max_tool_steps]
 
     def _run_tool(self, name, args):
-        if name not in TOOL_REGISTRY:
-            raise ValueError("Tool is not authorized")
+        meta = TOOL_REGISTRY.get(name)
+        if not meta or meta.get("risk") != "read":
+            raise PermissionError("Tool is not authorized")
         return run_tool(name, args)
 
     def chat(self, prompt: str):
         context = self.memory.context()
-        tool_name = None
-        tool_result = None
-        for _ in range(self.max_tool_steps):
-            candidate, args = self._select_tool(prompt)
-            if not candidate or candidate == tool_name:
-                break
-            tool_name = candidate
+        executed = []
+        for name, args in self._select_tools(prompt):
             try:
-                tool_result = self._run_tool(tool_name, args)
-                context += "\n\nTool result:\n" + json.dumps(tool_result, ensure_ascii=False)
+                result = self._run_tool(name, args)
             except Exception as exc:
-                tool_result = {"error": str(exc)}
-                context += "\n\nTool result:\n" + json.dumps(tool_result, ensure_ascii=False)
-            break
+                result = {"error": str(exc)}
+            executed.append({"name": name, "result": result})
+            context += "\n\nTool result (real local data):\n" + json.dumps(result, ensure_ascii=False)
 
         try:
             answer = self.runtime.generate(prompt, context)
@@ -51,7 +47,6 @@ class Engine:
         self.memory.add("user", prompt)
         self.memory.add("assistant", answer)
         response = {"answer": answer}
-        if tool_name:
-            response["tool"] = tool_name
-            response["tool_result"] = tool_result
+        if executed:
+            response["tools"] = executed
         return response
