@@ -1,12 +1,36 @@
 services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: network_home
+      POSTGRES_USER: network_home
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+    volumes:
+      - network_home_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U network_home -d network_home"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
   network-home-backend:
     build: ./backend
     environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://network_home:${POSTGRES_PASSWORD}@postgres:5432/network_home
+      SESSION_SECRET: ${SESSION_SECRET:?set SESSION_SECRET}
+      ADMIN_USER: ${ADMIN_USER:?set ADMIN_USER}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?set ADMIN_PASSWORD}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:8080}
       PANTHER_URL: http://host.docker.internal:8787
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    ports:
-      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    expose:
+      - "3000"
     restart: unless-stopped
 
   network-home-frontend:
@@ -19,3 +43,6 @@ services:
     depends_on:
       - network-home-backend
     restart: unless-stopped
+
+volumes:
+  network_home_pgdata:
