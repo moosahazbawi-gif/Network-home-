@@ -36,7 +36,7 @@ async function refreshTransfers() {
       const row=document.createElement('section'); row.className='row';
       row.innerHTML=`<div class="row-head"><div class="file-title"><span class="file-icon">↧</span><div><strong>${escapeHtml(item.safe_filename||item.source_url)}</strong><div class="meta">#${item.id} · ${new Date(item.created_at).toLocaleString('ar')}</div></div></div><span class="status ${statusClass(item.status)}">${statusLabel(item.status)}</span></div><div class="progress-line ${item.status==='running'?'active':''}"><span></span></div><div class="transfer-info"><span>${formatBytes(item.byte_size)}</span><span>${item.error_message?escapeHtml(item.error_message):escapeHtml(item.source_url)}</span></div><div class="actions"></div>`;
       const actions=row.querySelector('.actions');
-      if(item.status==='completed'){const dl=document.createElement('a'); dl.className='button-link'; dl.href=`/api/transfers/${item.id}/file`; dl.textContent='تحميل الملف'; actions.appendChild(dl);}
+      if(item.status==='completed'){const dl=document.createElement('a'); dl.className='button-link'; dl.href=`${API_BASE}/transfers/${item.id}/file`; dl.textContent='تحميل الملف'; actions.appendChild(dl);}
       if(item.status==='queued'||item.status==='running'){const c=document.createElement('button'); c.className='ghost'; c.textContent='إلغاء'; c.onclick=async()=>{await api(`/transfers/${item.id}/cancel`,{method:'POST'});await refreshTransfers();}; actions.appendChild(c);}
       wrap.appendChild(row);
     }
