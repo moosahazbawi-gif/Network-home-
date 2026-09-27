@@ -52,10 +52,10 @@ services:
     env_file:
       - .env
     environment:
-      DATABASE_URL: ${DATABASE_URL:?set DATABASE_URL}
-      REDIS_URL: ${REDIS_URL:-redis://cloudbell-redis:6379/0}
-      CELERY_BROKER_URL: ${CELERY_BROKER_URL:-redis://cloudbell-redis:6379/0}
-      CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND:-redis://cloudbell-redis:6379/1}
+      DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER:?set POSTGRES_USER}:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@cloudbell-postgres:5432/${POSTGRES_DB:?set POSTGRES_DB}
+      REDIS_URL: redis://cloudbell-redis:6379/0
+      CELERY_BROKER_URL: redis://cloudbell-redis:6379/0
+      CELERY_RESULT_BACKEND: redis://cloudbell-redis:6379/1
       DATA_DIR: ${DATA_DIR:-/data}
     volumes:
       - cloudbell_data:/data
