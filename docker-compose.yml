@@ -1,4 +1,6 @@
-version: "3.8"
+include:
+  - path: ./cloudbell-pro/docker-compose.yml
+    env_file: ./cloudbell-pro/.env
 
 services:
 
@@ -10,6 +12,7 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - chirpstack
+      - cloudbell-nginx
 
   postgres:
     image: postgres:14
