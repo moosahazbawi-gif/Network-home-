@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Panther AI — Network Home</title><link rel="stylesheet" href="style.css"></head>
-<body><nav class="navbar"><div class="logo">PANTHER <span>• AI</span></div><a href="../index.html">Network Home</a></nav>
-<header class="hero" style="min-height:48vh"><div class="hero-content"><div class="eyebrow">AION / PANTHER INTELLIGENCE</div><h1>تحدث مع<br>Panther AI.</h1><p>واجهة ذكية ضمن منظومة Network Home.</p></div></header>
-<section class="container" style="padding-top:20px"><div class="card"><h2>جلسة الذكاء الاصطناعي</h2><p class="muted">اكتب رسالتك ثم أرسلها إلى Panther.</p><textarea id="pantherPrompt" rows="6" placeholder="اكتب رسالتك..."></textarea><button id="pantherSend" class="btn primary">إرسال إلى Panther</button><pre id="pantherAnswer" aria-live="polite" style="white-space:pre-wrap;margin-top:20px;color:#bfefff"></pre></div></section>
+<html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Panther AI — Network Home</title><link rel="stylesheet" href="../style.css"><link rel="icon" type="image/svg+xml" href="../favicon.svg"></head>
+<body>
+<nav class="navbar"><a class="logo" href="../index.html">PANTHER <span>• AI</span></a><ul><li><a href="../index.html">Network Home</a></li><li><a href="../services.html">الخدمات</a></li><li><a href="../about.html">عن المنظومة</a></li></ul><a class="nav-btn" href="../admin.html">مركز الإدارة</a></nav>
+<header class="hero compact-hero"><div class="hero-content"><div class="eyebrow">AION / PANTHER INTELLIGENCE</div><h1>طبقة الذكاء<br>داخل المنظومة.</h1><p>واجهة Panther AI تعمل من خلال بوابة Network Home الآمنة.</p></div></header>
+<section class="container" style="padding-top:20px"><div class="card" id="gate"><div class="eyebrow">SECURE AI GATE</div><h2>الوصول إلى Panther</h2><p class="muted">المحادثة تتطلب جلسة إدارية موثقة.</p><a class="btn primary" href="../admin.html">تسجيل الدخول</a></div>
+<div class="card" id="chatPanel" hidden><div class="toolbar"><div><h2>جلسة Panther AI</h2><p id="identity" class="muted">جلسة موثقة</p></div></div><textarea id="pantherPrompt" rows="7" placeholder="اكتب رسالتك إلى Panther..."></textarea><button id="pantherSend" class="btn primary">إرسال إلى Panther</button><pre id="pantherAnswer" aria-live="polite" style="white-space:pre-wrap;margin-top:20px;color:#bfefff"></pre></div></section>
 <script src="script.js"></script></body></html>
