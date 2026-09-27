@@ -1,5 +1,5 @@
 from contextlib import contextmanager
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import declarative_base, sessionmaker
 from .config import settings
 
@@ -32,6 +32,9 @@ def session_scope():
 def init_db():
     from . import models  # noqa: F401
     Base.metadata.create_all(bind=engine)
+    with engine.begin() as conn:
+        conn.execute(text("ALTER TABLE transfers ALTER COLUMN byte_size TYPE BIGINT"))
+        conn.execute(text("ALTER TABLE uploads ALTER COLUMN byte_size TYPE BIGINT"))
 
 
 if __name__ == "__main__":
