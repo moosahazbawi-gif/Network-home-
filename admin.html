@@ -2,35 +2,58 @@
 <html lang="fa">
 <head>
 <meta charset="UTF-8">
-<title>Admin Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login | Network Home</title>
 <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-
 <section class="container">
   <div class="card">
     <h2>ورود مدیر</h2>
-
-    <input id="user" placeholder="Username"><br><br>
-    <input id="pass" type="password" placeholder="Password"><br><br>
-
-    <button class="btn" onclick="login()">ورود</button>
+    <input id="user" autocomplete="username" placeholder="Username">
+    <br><br>
+    <input id="pass" type="password" autocomplete="current-password" placeholder="Password">
+    <br><br>
+    <button id="loginButton" class="btn">ورود</button>
+    <p id="error" role="alert"></p>
   </div>
 </section>
-
 <script>
-function login(){
-  const u = document.getElementById("user").value;
-  const p = document.getElementById("pass").value;
+let csrfToken = "";
 
-  if(u === "admin" && p === "1234"){
+async function getCsrf() {
+  const r = await fetch("/api/auth/csrf", { credentials: "same-origin" });
+  const data = await r.json();
+  if (!r.ok) throw new Error(data.error || "خطا در دریافت CSRF");
+  csrfToken = data.csrfToken;
+}
+
+async function login() {
+  const error = document.getElementById("error");
+  error.textContent = "";
+  try {
+    if (!csrfToken) await getCsrf();
+    const r = await fetch("/api/auth/login", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json", "X-CSRF-Token": csrfToken },
+      body: JSON.stringify({
+        username: document.getElementById("user").value,
+        password: document.getElementById("pass").value
+      })
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || "ورود ناموفق");
     window.location.href = "crm-dashboard.html";
-  } else {
-    alert("خطا در داده");
+  } catch (err) {
+    error.textContent = err.message;
   }
 }
-</script>
 
+document.getElementById("loginButton").addEventListener("click", login);
+getCsrf().catch((err) => {
+  document.getElementById("error").textContent = err.message;
+});
+</script>
 </body>
 </html>
