@@ -1,6 +1,7 @@
 const express = require("express");
+const rateLimit = require("express-rate-limit");
 const { pool } = require("../db");
-const { requireAuth, requireRole, requireCsrf } = require("../middleware/auth");
+const { requireRole, requireCsrf } = require("../middleware/auth");
 
 const router = express.Router();
 const publicRequestLimiter = rateLimit({ windowMs: 15 * 60 * 1000, limit: 30, standardHeaders: true, legacyHeaders: false });
