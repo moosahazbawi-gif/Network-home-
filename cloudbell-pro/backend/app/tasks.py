@@ -117,7 +117,7 @@ def process_transfer(transfer_id: int):
                     if not chunk:
                         continue
                     total += len(chunk)
-                    if total > settings.max_download_bytes:
+                    if total > settings.max_file_bytes:
                         raise ValueError("تم تجاوز الحد الأقصى للبيانات")
                     tmp.write(chunk)
                     hasher.update(chunk)
