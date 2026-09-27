@@ -41,7 +41,21 @@ async function refreshTransfers() {
     transfersBox.appendChild(wrap);
   } finally { refreshBtn.disabled=false; }
 }
-async function loadDashboard(){ state.me=await api('/auth/me'); renderMe(); appPanel.classList.remove('hidden'); logoutBtn.classList.remove('hidden'); bootstrapForm.classList.add('hidden'); loginForm.closest('.auth-panel').classList.add('hidden'); await refreshTransfers(); }
+async function refreshUploads(){
+  const items=await api('/uploads'); uploadsBox.innerHTML='';
+  if(!items.length){uploadsBox.innerHTML='<div class="empty"><strong>لا توجد ملفات مرفوعة</strong></div>';return;}
+  const wrap=document.createElement('div');wrap.className='table';
+  for(const item of items){
+    const row=document.createElement('section');row.className='row';
+    row.innerHTML=`<div class="row-head"><div class="file-title"><span class="file-icon">↑</span><div><strong>${escapeHtml(item.safe_filename)}</strong><div class="meta">#${item.id} · ${formatBytes(item.byte_size)}</div></div></div><span class="status completed">مرفوع</span></div><div class="actions"></div>`;
+    const actions=row.querySelector('.actions');
+    const dl=document.createElement('a');dl.className='button-link';dl.href=`${API_BASE}/uploads/${item.id}/file`;dl.textContent='تحميل';
+    const del=document.createElement('button');del.className='ghost';del.textContent='حذف';del.onclick=async()=>{await api(`/uploads/${item.id}`,{method:'DELETE'});await refreshUploads();};
+    actions.append(dl,del);wrap.appendChild(row);
+  }
+  uploadsBox.appendChild(wrap);
+}
+async function loadDashboard(){ state.me=await api('/auth/me'); renderMe(); appPanel.classList.remove('hidden'); logoutBtn.classList.remove('hidden'); bootstrapForm.classList.add('hidden'); loginForm.closest('.auth-panel').classList.add('hidden'); await refreshTransfers(); await refreshUploads(); }
 
 loginForm.addEventListener('submit', async e=>{e.preventDefault();const f=new FormData(loginForm);try{const d=await api('/auth/login',{method:'POST',body:JSON.stringify({email:f.get('email'),password:f.get('password')})});state.token=d.access_token;localStorage.setItem('cloudbell_token',state.token);await loadDashboard();}catch(err){setMessage(err.message,'error');}});
 bootstrapForm.addEventListener('submit',async e=>{e.preventDefault();const f=new FormData(bootstrapForm);try{await api('/auth/bootstrap-admin',{method:'POST',body:JSON.stringify({email:f.get('email'),password:f.get('password')})});setMessage('تم إنشاء المسؤول. سجل الدخول الآن.');}catch(err){setMessage(err.message,'error');}});
@@ -50,3 +64,14 @@ refreshBtn.addEventListener('click',refreshTransfers);
 logoutBtn.addEventListener('click',()=>{state.token='';state.me=null;localStorage.removeItem('cloudbell_token');appPanel.classList.add('hidden');logoutBtn.classList.add('hidden');loginForm.closest('.auth-panel').classList.remove('hidden');meBox.innerHTML='';transfersBox.innerHTML='';setMessage('تم تسجيل الخروج.');});
 setInterval(()=>{if(state.token&&!appPanel.classList.contains('hidden'))refreshTransfers().catch(()=>{});},5000);
 (async()=>{if(!state.token)return;try{await loadDashboard();}catch(err){localStorage.removeItem('cloudbell_token');state.token='';setMessage('انتهت الجلسة. سجل الدخول من جديد.','error');}})();
+
+uploadForm.addEventListener('submit',async e=>{
+  e.preventDefault(); const file=fileInput.files[0]; if(!file)return;
+  const button=uploadForm.querySelector('button[type="submit"]'); button.disabled=true; button.textContent='جاري الرفع…';
+  try{
+    const body=new FormData(); body.append('file',file);
+    await api('/uploads',{method:'POST',body,headers:{Authorization:`Bearer ${state.token}`}});
+    uploadForm.reset(); await refreshUploads();
+  }catch(err){setMessage(err.message,'error');}
+  finally{button.disabled=false;button.textContent='رفع الملف';}
+});
