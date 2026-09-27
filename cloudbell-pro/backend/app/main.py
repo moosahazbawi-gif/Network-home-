@@ -76,9 +76,11 @@ def create_upload(file:UploadFile=File(...),db:Session=Depends(get_session),curr
                 tmp.write(chunk); digest.update(chunk)
         if total<settings.min_file_bytes:
             raise HTTPException(413,"الملف أصغر من الحد الأدنى")
-        upload=Upload(user_id=current_user.id,safe_filename=name,stored_filename=f"upload_{current_user.id}_{int(datetime.utcnow().timestamp()*1000000)}_{name}",content_type=file.content_type,sha256=digest.hexdigest(),byte_size=total,status="completed",completed_at=datetime.utcnow())
+        stored_name=f"upload_{current_user.id}_{int(datetime.utcnow().timestamp()*1000000)}_{name}"
+        final_path=target_dir/stored_name
+        temp_path.replace(final_path); temp_path=None
+        upload=Upload(user_id=current_user.id,safe_filename=name,stored_filename=stored_name,content_type=file.content_type,sha256=digest.hexdigest(),byte_size=total,status="completed",completed_at=datetime.utcnow())
         db.add(upload); db.commit(); db.refresh(upload)
-        final_path=target_dir/upload.stored_filename; temp_path.replace(final_path); temp_path=None
         return upload
     except HTTPException:
         db.rollback()
@@ -87,6 +89,8 @@ def create_upload(file:UploadFile=File(...),db:Session=Depends(get_session),curr
     except Exception as exc:
         db.rollback()
         if temp_path and temp_path.exists(): temp_path.unlink(missing_ok=True)
+        if 'final_path' in locals() and final_path.exists():
+            final_path.unlink(missing_ok=True)
         raise HTTPException(500,f"فشل رفع الملف: {str(exc)[:200]}")
     finally:
         file.file.close()
