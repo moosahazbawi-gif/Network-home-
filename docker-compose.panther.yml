@@ -17,7 +17,7 @@ services:
   network-home-backend:
     build: ./backend
     environment:
-      NODE_ENV: production
+      NODE_ENV: ${NODE_ENV:-development}
       DATABASE_URL: postgresql://network_home:${POSTGRES_PASSWORD}@postgres:5432/network_home
       SESSION_SECRET: ${SESSION_SECRET:?set SESSION_SECRET}
       ADMIN_USER: ${ADMIN_USER:?set ADMIN_USER}
