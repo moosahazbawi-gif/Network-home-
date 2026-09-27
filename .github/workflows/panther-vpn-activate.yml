@@ -1,0 +1,35 @@
+name: Panther VPN activation
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  activate:
+    name: Activate Panther IKEv2
+    runs-on: [self-hosted, panther-x2]
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Panther VPN configuration
+        run: |
+          set -euo pipefail
+          sudo install -m 644 panther-vpn/ipsec.conf /etc/ipsec.conf
+          sudo install -m 644 panther-vpn/sysctl.conf /etc/sysctl.d/99-panther-vpn.conf
+          sudo sysctl --system
+          sudo nft -f panther-vpn/nftables.conf
+          sudo systemctl enable --now strongswan-starter
+          sudo ipsec rereadall
+
+      - name: Verify IKEv2
+        run: |
+          set -euo pipefail
+          test "$(sysctl -n net.ipv4.ip_forward)" = "1"
+          sudo systemctl is-active --quiet strongswan-starter
+          sudo ipsec statusall
+          sudo ss -lunp | grep -E ':(500|4500)\\b'
+          sudo openssl x509             -in /etc/ipsec.d/certs/panther-server-cert.pem             -noout -ext subjectAltName | grep -F 'IP Address:5.127.143.74'
