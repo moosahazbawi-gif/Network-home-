@@ -1,25 +1,22 @@
-function submitRequest(e) {
+async function submitRequest(e) {
   e.preventDefault();
-
-  const name = document.querySelector("#name").value;
-  const phone = document.querySelector("#phone").value;
-  const service = document.querySelector("#service").value;
-  const message = document.querySelector("#message").value;
-
-  const request = {
-    id: Date.now(),
-    name,
-    phone,
-    service,
-    message,
-    date: new Date().toLocaleString()
+  const body = {
+    name: document.querySelector("#name").value,
+    phone: document.querySelector("#phone").value,
+    service: document.querySelector("#service").value,
+    message: document.querySelector("#message").value
   };
-
-  let requests = JSON.parse(localStorage.getItem("requests")) || [];
-  requests.push(request);
-  localStorage.setItem("requests", JSON.stringify(requests));
-
-  alert("درخواست با موفقیت انجام شد ✔️");
-
-  document.querySelector("form").reset();
+  try {
+    const r = await fetch("/api/request", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || "ثبت درخواست ناموفق بود");
+    alert("درخواست با موفقیت انجام شد ✔️");
+    document.querySelector("form").reset();
+  } catch (err) {
+    alert(err.message);
+  }
 }
