@@ -6,8 +6,18 @@ async function submitRequest(e) {
     service: document.getElementById("service").value,
     message: document.getElementById("message").value
   };
-  await fetch("/api/request", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  const r = await fetch("/api/request", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  const data = await r.json();
+  if (!r.ok) {
+    alert(data.error || "خطا در ثبت درخواست");
+    return;
+  }
   alert("Sent ✔");
+  document.querySelector("form")?.reset();
 }
 
 async function askPanther() {
@@ -19,9 +29,12 @@ async function askPanther() {
   button.disabled = true;
   output.textContent = "...";
   try {
+    const csrfResponse = await fetch("/api/auth/csrf", { credentials: "same-origin" });
+    const csrf = await csrfResponse.json();
     const r = await fetch("/api/panther/chat", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json", "X-CSRF-Token": csrf.csrfToken },
       body: JSON.stringify({ prompt })
     });
     const data = await r.json();
