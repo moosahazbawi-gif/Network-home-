@@ -1,33 +1,7 @@
 <!DOCTYPE html>
-<html lang="fa">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Analytics | Network Home</title>
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-<section class="container">
-<h1>گزارش سیستم</h1>
-<div class="grid">
-  <div class="card"><h2 id="total">0</h2><p>تعداد درخواست ها</p></div>
-  <div class="card"><h2>24/7</h2><p>پشتیبانی فنی</p></div>
-  <div class="card"><h2>99%</h2><p>پایداری سیستم</p></div>
-</div>
-</section>
-<script>
-(async()=>{
-  try{
-    const me=await fetch("/api/auth/me",{credentials:"same-origin"});
-    if(!me.ok) throw new Error();
-    const r=await fetch("/api/request/",{credentials:"same-origin"});
-    if(!r.ok) throw new Error();
-    const data=await r.json();
-    document.getElementById("total").textContent=data.requests.length;
-  }catch{
-    window.location.href="admin.html";
-  }
-})();
-</script>
-</body>
-</html>
+<html lang="fa" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>تحلیل — Network Home</title><link rel="stylesheet" href="style.css"></head>
+<body><nav class="navbar"><div class="logo">NETWORK <span>• ANALYTICS</span></div><a href="crm-dashboard.html">مرکز مدیریت</a></nav>
+<section class="hero" style="min-height:40vh"><div class="hero-content"><div class="eyebrow">SYSTEM INSIGHTS</div><h1>تصویر زنده سامانه</h1><p>شاخص‌های فعلی از داده‌های واقعی پنل مدیریت.</p></div></section>
+<section class="container"><div class="grid"><div class="card"><div class="stat" id="total">—</div><p>درخواست ثبت‌شده</p></div><div class="card"><div class="stat">24/7</div><p>پشتیبانی فنی</p></div><div class="card"><div class="stat">AION</div><p>هویت هوشمند پروژه</p></div></div></section>
+<script>(async()=>{try{const m=await fetch("/api/auth/me",{credentials:"same-origin"});if(!m.ok)throw 0;const r=await fetch("/api/request/",{credentials:"same-origin"});if(!r.ok)throw 0;const d=await r.json();document.getElementById("total").textContent=d.requests.length}catch{location.href="admin.html"}})()</script>
+</body></html>
