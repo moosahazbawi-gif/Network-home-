@@ -16,9 +16,20 @@ router.post("/", publicRequestLimiter, async (req, res, next) => {
     const phone = clean(req.body?.phone, 40);
     const service = clean(req.body?.service, 120);
     const message = clean(req.body?.message, 4000);
+    const allowedServices = new Set([
+      "Panther VPN",
+      "Panther VPS",
+      "Panther AI",
+      "Panther Infrastructure",
+      "CloudBell Pro",
+      "راهکار نرم‌افزاری"
+    ]);
 
     if (!name || !phone || !service || !message) {
       return res.status(400).json({ ok: false, error: "name, phone, service and message are required" });
+    }
+    if (!allowedServices.has(service)) {
+      return res.status(400).json({ ok: false, error: "unsupported service" });
     }
 
     const result = await pool.query(
