@@ -81,10 +81,15 @@ def process_transfer(transfer_id: int):
             content_length = response.headers.get("Content-Length")
             if content_length:
                 try:
-                    if int(content_length) > settings.max_download_bytes:
-                        raise ValueError("الملف يتجاوز الحد المسموح")
-                except ValueError:
+                    declared_size = int(content_length)
+                except (TypeError, ValueError):
                     raise ValueError("حجم الملف المعلن غير صالح")
+                if declared_size < 0:
+                    raise ValueError("حجم الملف المعلن غير صالح")
+                if declared_size > settings.max_file_bytes:
+                    raise ValueError("الملف يتجاوز الحد الأقصى")
+                if declared_size < settings.min_file_bytes:
+                    raise ValueError("الملف أصغر من الحد الأدنى")
 
             content_type = response.headers.get("Content-Type")
             disposition = response.headers.get("Content-Disposition", "")
@@ -116,6 +121,9 @@ def process_transfer(transfer_id: int):
                         raise ValueError("تم تجاوز الحد الأقصى للبيانات")
                     tmp.write(chunk)
                     hasher.update(chunk)
+
+            if total < settings.min_file_bytes:
+                raise ValueError("الملف أصغر من الحد الأدنى")
 
             final_name = f"{transfer.id}_{safe_filename(name)}"
             final_path = downloads_dir / final_name
