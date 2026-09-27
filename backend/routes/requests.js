@@ -3,12 +3,13 @@ const { pool } = require("../db");
 const { requireAuth, requireRole, requireCsrf } = require("../middleware/auth");
 
 const router = express.Router();
+const publicRequestLimiter = rateLimit({ windowMs: 15 * 60 * 1000, limit: 30, standardHeaders: true, legacyHeaders: false });
 
 function clean(value, max) {
   return typeof value === "string" ? value.trim().slice(0, max) : "";
 }
 
-router.post("/", async (req, res, next) => {
+router.post("/", publicRequestLimiter, async (req, res, next) => {
   try {
     const name = clean(req.body?.name, 120);
     const phone = clean(req.body?.phone, 40);
