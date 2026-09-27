@@ -1,32 +1,49 @@
 const express = require("express");
+const { requireAuth, requireRole, requireCsrf } = require("./middleware/auth");
 
 const app = express();
-app.use(express.json());
+app.use(express.json({ limit: "32kb" }));
 
 const PANTHER_URL = process.env.PANTHER_URL || "http://127.0.0.1:8787";
 
-app.get("/api/panther/health", async (_req, res) => {
+function parsePantherUrl() {
   try {
-    const r = await fetch(`${PANTHER_URL}/health`);
-    res.status(r.status).json(await r.json());
-  } catch (err) {
+    const url = new URL(PANTHER_URL);
+    if (url.protocol !== "http:" && url.protocol !== "https:") throw new Error("unsupported protocol");
+    return url;
+  } catch {
+    throw new Error("Invalid PANTHER_URL");
+  }
+}
+
+const pantherUrl = parsePantherUrl();
+
+app.get("/api/panther/health", requireAuth, async (_req, res) => {
+  try {
+    const r = await fetch(new URL("/health", pantherUrl));
+    const data = await r.json();
+    res.status(r.status).json(data);
+  } catch {
     res.status(503).json({ ok: false, error: "Panther unavailable" });
   }
 });
 
-app.post("/api/panther/chat", async (req, res) => {
-  if (!req.body || typeof req.body.prompt !== "string" || !req.body.prompt.trim()) {
-    return res.status(400).json({ ok: false, error: "prompt is required" });
+app.post("/api/panther/chat", requireRole("admin"), requireCsrf, async (req, res) => {
+  const prompt = typeof req.body?.prompt === "string" ? req.body.prompt.trim() : "";
+  if (!prompt || prompt.length > 12000) {
+    return res.status(400).json({ ok: false, error: "prompt is required and must be <= 12000 characters" });
   }
+
   try {
-    const r = await fetch(`${PANTHER_URL}/chat`, {
+    const r = await fetch(new URL("/chat", pantherUrl), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt: req.body.prompt })
+      body: JSON.stringify({ prompt }),
+      signal: AbortSignal.timeout(30000)
     });
     const data = await r.json();
     res.status(r.status).json(data);
-  } catch (err) {
+  } catch {
     res.status(503).json({ ok: false, error: "Panther unavailable" });
   }
 });
