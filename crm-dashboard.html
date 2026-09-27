@@ -5,107 +5,112 @@
   <title>CRM Dashboard | Network Home</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
-
-  <style>
-    .toolbar {
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:20px;
-    }
-
-    .btn-small {
-      padding:8px 12px;
-      border-radius:8px;
-      border:none;
-      cursor:pointer;
-      background:linear-gradient(135deg,#00c6ff,#0072ff);
-      color:white;
-    }
-
-    .danger {
-      background:rgba(255,0,0,0.2);
-      border:1px solid rgba(255,0,0,0.4);
-    }
-  </style>
-
-<link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
-
 <body>
-
 <nav class="navbar">
   <div class="logo">CRM<span>NH</span></div>
-
   <ul>
     <li><a href="index.html">خانه</a></li>
     <li><a href="services.html">خدمات</a></li>
     <li><a href="contact.html">ارتباط</a></li>
   </ul>
+  <button id="logout" class="btn-small danger">خروج</button>
 </nav>
 
 <section class="hero" style="height:35vh;">
   <div class="hero-content">
     <h1>داشبورد مدیریت درخواست‌ها</h1>
-    <p>مشاهده، مدیریت و حذف درخواست‌های مشتریان</p>
+    <p id="identity">در حال بررسی نشست...</p>
   </div>
 </section>
 
 <section>
-
   <div class="card">
-
     <div class="toolbar">
       <h2>لیست درخواست‌ها</h2>
-      <button class="btn-small danger" onclick="clearAll()">حذف همه</button>
+      <button id="clearAll" class="btn-small danger">حذف همه</button>
     </div>
-
     <div id="list"></div>
-
   </div>
-
 </section>
 
 <script>
-function loadRequests() {
-  let requests = JSON.parse(localStorage.getItem("requests")) || [];
-  let list = document.getElementById("list");
+let csrfToken = "";
 
-  if (requests.length === 0) {
+async function loadCsrf() {
+  const r = await fetch("/api/auth/csrf", { credentials: "same-origin" });
+  const data = await r.json();
+  if (!r.ok) throw new Error(data.error || "CSRF unavailable");
+  csrfToken = data.csrfToken;
+}
+
+async function api(url, options = {}) {
+  const headers = { ...(options.headers || {}) };
+  if (options.method && options.method !== "GET") headers["X-CSRF-Token"] = csrfToken;
+  const r = await fetch(url, { ...options, credentials: "same-origin", headers });
+  const data = r.status === 204 ? null : await r.json();
+  if (!r.ok) throw new Error(data?.error || "request failed");
+  return data;
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, (c) => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
+  }[c]));
+}
+
+async function loadRequests() {
+  const data = await api("/api/request/");
+  const list = document.getElementById("list");
+  if (!data.requests.length) {
     list.innerHTML = "<p>هیچ درخواستی ثبت نشده است</p>";
     return;
   }
-
-  list.innerHTML = requests.map((r, index) => `
+  list.innerHTML = data.requests.map((r) => `
     <div class="card" style="margin:10px 0;">
-      <p><b>#ID:</b> ${r.id}</p>
-      <p><b>نام:</b> ${r.name}</p>
-      <p><b>شماره:</b> ${r.phone}</p>
-      <p><b>خدمت:</b> ${r.service}</p>
-      <p><b>توضیحات:</b> ${r.message}</p>
-      <p><b>تاریخ:</b> ${r.date}</p>
-
-      <button class="btn-small danger" onclick="deleteRequest(${r.id})">حذف</button>
+      <p><b>#ID:</b> ${escapeHtml(r.id)}</p>
+      <p><b>نام:</b> ${escapeHtml(r.name)}</p>
+      <p><b>شماره:</b> ${escapeHtml(r.phone)}</p>
+      <p><b>خدمت:</b> ${escapeHtml(r.service)}</p>
+      <p><b>توضیحات:</b> ${escapeHtml(r.message)}</p>
+      <p><b>تاریخ:</b> ${escapeHtml(r.created_at)}</p>
+      <button class="btn-small danger" onclick="deleteRequest(${Number(r.id)})">حذف</button>
     </div>
   `).join("");
 }
 
-function deleteRequest(id) {
-  let requests = JSON.parse(localStorage.getItem("requests")) || [];
-  requests = requests.filter(r => r.id !== id);
-  localStorage.setItem("requests", JSON.stringify(requests));
-  loadRequests();
+async function deleteRequest(id) {
+  await api("/api/request/" + encodeURIComponent(id), { method: "DELETE" });
+  await loadRequests();
 }
 
-function clearAll() {
-  if (confirm("هل أنت متأكد من حذف كل الطلبات؟")) {
-    localStorage.removeItem("requests");
-    loadRequests();
+async function clearAll() {
+  if (!confirm("هل أنت متأكد من حذف كل الطلبات؟")) return;
+  await api("/api/request/", { method: "DELETE" });
+  await loadRequests();
+}
+
+async function logout() {
+  await api("/api/auth/logout", { method: "POST" });
+  window.location.href = "admin.html";
+}
+
+async function boot() {
+  try {
+    const me = await api("/api/auth/me");
+    if (me.user.role !== "admin") throw new Error("forbidden");
+    document.getElementById("identity").textContent = "المستخدم: " + me.user.username;
+    await loadCsrf();
+    await loadRequests();
+  } catch {
+    window.location.href = "admin.html";
   }
 }
 
-loadRequests();
+document.getElementById("logout").addEventListener("click", logout);
+document.getElementById("clearAll").addEventListener("click", clearAll);
+boot();
 </script>
-
 </body>
 </html>
