@@ -41,6 +41,12 @@
               <label>الرابط<input name="url" type="url" placeholder="https://example.com/file.zip" required></label>
               <button type="submit">بدء التنزيل</button>
             </form>
+            <p class="message">الحد الأدنى والأقصى للحجم يطبّقان على التنزيل والرفع.</p>
+            <h2>رفع ملف</h2>
+            <form id="uploadForm" class="stack">
+              <label>الملف<input id="fileInput" name="file" type="file" required></label>
+              <button type="submit">رفع الملف</button>
+            </form>
           </section>
           <section class="profile">
             <h2>الحساب</h2>
@@ -52,6 +58,7 @@
           <button id="refreshBtn" class="ghost">تحديث</button>
         </div>
         <div id="transfers"></div>
+        <div class="toolbar"><h2>ملفاتي المرفوعة</h2></div><div id="uploads"></div>
       </article>
     </section>
   </main>
