@@ -1,84 +1,12 @@
 <!DOCTYPE html>
-<html lang="fa">
-<head>
-  <meta charset="UTF-8">
-  <title>ارتباط با ما | Network Home</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
-<link rel="icon" type="image/svg+xml" href="favicon.svg">
-</head>
-
+<html lang="fa" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ارتباط — Network Home</title><link rel="stylesheet" href="style.css"><link rel="icon" type="image/svg+xml" href="favicon.svg"></head>
 <body>
-
-<!-- NAVBAR -->
-<nav class="navbar">
-  <div class="logo">NETWORK<span>HOME</span></div>
-
-  <ul>
-    <li><a href="index.html">خانه</a></li>
-    <li><a href="services.html">خدمات</a></li>
-    <li><a href="about.html">درباره</a></li>
-    <li><a href="contact.html">ارتباط</a></li>
-  </ul>
-
-  <a class="nav-btn" href="request.html">شروع پروژه</a>
-</nav>
-
-<!-- HERO -->
-<section class="hero" style="height:50vh;">
-  <div class="hero-content">
-    <h1>ارتباط با ما</h1>
-    <p>ما همیشه آماده پاسخ‌گویی و همکاری با شما هستیم</p>
-  </div>
-</section>
-
-<!-- CONTACT SECTION -->
-<section class="contact">
-
-  <div class="grid">
-
-    <!-- FORM -->
-    <div class="card">
-      <h2>ارسال پیام</h2>
-
-      <form>
-        <input type="text" placeholder="نام کامل" required>
-        <input type="text" placeholder="شماره تماس" required>
-        <input type="email" placeholder="ایمیل (اختیاری)">
-        <textarea placeholder="پیام شما..." rows="5" required></textarea>
-
-        <button type="submit" class="btn primary">ارسال پیام</button>
-      </form>
-    </div>
-
-    <!-- INFO -->
-    <div class="card">
-      <h2>اطلاعات تماس</h2>
-
-      <p>📍 موقعیت: خدمات آنلاین</p>
-      <p>📞 پشتیبانی: 24/7</p>
-      <p>💬 پاسخ‌گویی سریع و حرفه‌ای</p>
-
-      <hr style="margin:15px 0; opacity:0.2;">
-
-      <p>ارتباط با ما یعنی شروع یک مسیر حرفه‌ای در دنیای فناوری</p>
-    </div>
-
-  </div>
-
-</section>
-
-<!-- CTA -->
-<section class="cta">
-  <h2>منتظر شما هستیم</h2>
-  <p>همین حالا پروژه خود را شروع کنید</p>
-  <a class="btn primary" href="request.html">ثبت درخواست</a>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <p>© تمامی حقوق محفوظ است - Network Home</p>
-</footer>
-
-</body>
-</html>
+<nav class="navbar"><a class="logo" href="index.html">NETWORK <span>• HOME</span></a><ul><li><a href="index.html">خانه</a></li><li><a href="services.html">خدمات</a></li><li><a href="about.html">درباره</a></li><li><a href="contact.html">ارتباط</a></li></ul><a class="nav-btn" href="request.html">شروع پروژه</a></nav>
+<header class="hero compact-hero"><div class="hero-content"><div class="eyebrow">NETWORK HOME / CONTACT</div><h1>بیایید از مسئله شروع کنیم.</h1><p>برای پروژه، زیرساخت یا پشتیبانی، درخواستت را از مسیر واحد ثبت کن.</p></div></header>
+<section class="container"><div class="grid">
+<div class="card"><h2>ارسال پیام</h2><form onsubmit="submitRequest(event)"><input id="name" type="text" placeholder="نام کامل" autocomplete="name" required><input id="phone" type="text" placeholder="شماره تماس" autocomplete="tel" required><select id="service" required><option value="">انتخاب خدمت</option><option>شبکه و زیرساخت</option><option>سرور و سرویس</option><option>امنیت</option><option>Panther AI</option><option>CloudBell Pro</option><option>راهکار نرم‌افزاری</option></select><textarea id="message" rows="6" placeholder="توضیحات..." required></textarea><button type="submit" class="btn primary">ارسال درخواست</button><p id="formStatus" class="muted" role="status" aria-live="polite"></p></form></div>
+<div class="card"><div class="eyebrow">ONE ENTRY POINT</div><h2>یک مسیر برای ارتباط</h2><p class="muted">درخواست عمومی از API امن سامانه ثبت می‌شود و در مرکز مدیریت قابل پیگیری است.</p><hr class="soft-rule"><p>◉ پاسخ‌گویی فنی</p><p>◉ ثبت و مدیریت درخواست</p><p>◉ اتصال به لایه‌های Network Home</p></div>
+</div></section>
+<footer><p>© Network Home — AION.IrAp.GPT</p></footer>
+<script src="script.js"></script>
+</body></html>
