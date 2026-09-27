@@ -1,5 +1,5 @@
 services:
-  postgres:
+  cloudbell-postgres:
     image: postgres:16-alpine
     environment:
       POSTGRES_DB: ${POSTGRES_DB:?set POSTGRES_DB}
@@ -13,7 +13,7 @@ services:
       timeout: 5s
       retries: 5
 
-  redis:
+  cloudbell-redis:
     image: redis:7-alpine
     volumes:
       - redis_data:/data
@@ -23,7 +23,7 @@ services:
       timeout: 5s
       retries: 5
 
-  backend:
+  cloudbell-backend:
     build:
       context: ./backend
     env_file:
@@ -37,16 +37,16 @@ services:
     volumes:
       - cloudbell_data:/data
     depends_on:
-      postgres:
+      cloudbell-postgres:
         condition: service_healthy
-      redis:
+      cloudbell-redis:
         condition: service_healthy
     command: >
       sh -c "python -m app.db && uvicorn app.main:app --host 0.0.0.0 --port 8000"
     expose:
       - "8000"
 
-  worker:
+  cloudbell-worker:
     build:
       context: ./backend
     env_file:
@@ -60,13 +60,13 @@ services:
     volumes:
       - cloudbell_data:/data
     depends_on:
-      postgres:
+      cloudbell-postgres:
         condition: service_healthy
-      redis:
+      cloudbell-redis:
         condition: service_healthy
     command: celery -A app.tasks.celery_app worker --loglevel=info
 
-  nginx:
+  cloudbell-nginx:
     image: nginx:1.27-alpine
     depends_on:
       - backend
