@@ -1,13 +1,26 @@
-function getRequests(){
-  return JSON.parse(localStorage.getItem("requests")) || [];
+async function getRequests() {
+  const response = await fetch("/api/request/", { credentials: "same-origin" });
+  if (!response.ok) throw new Error("Unable to load requests");
+  const data = await response.json();
+  return data.requests || [];
 }
 
-function addRequest(req){
-  let data = getRequests();
-  data.push(req);
-  localStorage.setItem("requests", JSON.stringify(data));
+async function addRequest(req) {
+  const response = await fetch("/api/request", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(req)
+  });
+  if (!response.ok) throw new Error("Unable to save request");
+  return response.json();
 }
 
-function clearRequests(){
-  localStorage.removeItem("requests");
+async function clearRequests(csrfToken) {
+  const response = await fetch("/api/request/", {
+    method: "DELETE",
+    credentials: "same-origin",
+    headers: { "X-CSRF-Token": csrfToken }
+  });
+  if (!response.ok) throw new Error("Unable to clear requests");
+  return response.json();
 }
