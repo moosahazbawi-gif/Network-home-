@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CloudBell Pro</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div>
+        <h1>CloudBell Pro</h1>
+        <p>إدارة تنزيلات آمنة وواجهة عربية خفيفة</p>
+      </div>
+      <button id="logoutBtn" class="ghost hidden">تسجيل الخروج</button>
+    </header>
+
+    <section class="grid">
+      <article class="panel auth-panel">
+        <h2>الدخول</h2>
+        <form id="loginForm" class="stack">
+          <label>البريد الإلكتروني<input name="email" type="email" required></label>
+          <label>كلمة المرور<input name="password" type="password" required></label>
+          <button type="submit">دخول</button>
+        </form>
+        <form id="bootstrapForm" class="stack hidden">
+          <h3>تهيئة المسؤول الأول</h3>
+          <label>البريد الإلكتروني<input name="email" type="email" required></label>
+          <label>كلمة المرور<input name="password" type="password" required></label>
+          <button type="submit">إنشاء المسؤول</button>
+        </form>
+        <p id="authMessage" class="message"></p>
+      </article>
+
+      <article class="panel app-panel hidden" id="appPanel">
+        <div class="split">
+          <section>
+            <h2>تنزيل جديد</h2>
+            <form id="transferForm" class="stack">
+              <label>الرابط<input name="url" type="url" placeholder="https://example.com/file.zip" required></label>
+              <button type="submit">بدء التنزيل</button>
+            </form>
+          </section>
+          <section class="profile">
+            <h2>الحساب</h2>
+            <pre id="meBox"></pre>
+          </section>
+        </div>
+        <div class="toolbar">
+          <h2>الطلبات</h2>
+          <button id="refreshBtn" class="ghost">تحديث</button>
+        </div>
+        <div id="transfers"></div>
+      </article>
+    </section>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>
