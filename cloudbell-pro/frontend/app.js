@@ -9,7 +9,9 @@ const submitBtn = transferForm.querySelector('button[type="submit"]');
 function setMessage(text, kind = 'info') { authMessage.textContent = text; authMessage.className = `message ${kind}`; }
 function authHeaders() { const h = { 'Content-Type': 'application/json' }; if (state.token) h.Authorization = `Bearer ${state.token}`; return h; }
 async function api(path, options = {}) {
-  const resp = await fetch(`${API_BASE}${path}`, { ...options, headers: { ...authHeaders(), ...(options.headers || {}) } });
+  const headers = { ...authHeaders(), ...(options.headers || {}) };
+  if (options.body instanceof FormData) delete headers['Content-Type'];
+  const resp = await fetch(`${API_BASE}${path}`, { ...options, headers });
   const ct = resp.headers.get('content-type') || '';
   const data = ct.includes('application/json') ? await resp.json() : await resp.text();
   if (!resp.ok) { const e = new Error(data?.detail || (typeof data === 'string' ? data : 'فشل الطلب')); e.status = resp.status; throw e; }
