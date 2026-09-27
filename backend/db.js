@@ -2,7 +2,7 @@ const { Pool } = require("pg");
 
 const pool = new Pool(
   process.env.DATABASE_URL
-    ? { connectionString: process.env.DATABASE_URL, ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false }
+    ? { connectionString: process.env.DATABASE_URL, ssl: process.env.PGSSL === "true" ? { rejectUnauthorized: process.env.PGSSL_REJECT_UNAUTHORIZED !== "false" } : false }
     : {
         host: process.env.PGHOST || "127.0.0.1",
         port: Number(process.env.PGPORT || 5432),
