@@ -1,116 +1,17 @@
 <!DOCTYPE html>
-<html lang="fa">
-<head>
-  <meta charset="UTF-8">
-  <title>CRM Dashboard | Network Home</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
-</head>
-<body>
-<nav class="navbar">
-  <div class="logo">CRM<span>NH</span></div>
-  <ul>
-    <li><a href="index.html">خانه</a></li>
-    <li><a href="services.html">خدمات</a></li>
-    <li><a href="contact.html">ارتباط</a></li>
-  </ul>
-  <button id="logout" class="btn-small danger">خروج</button>
-</nav>
-
-<section class="hero" style="height:35vh;">
-  <div class="hero-content">
-    <h1>داشبورد مدیریت درخواست‌ها</h1>
-    <p id="identity">در حال بررسی نشست...</p>
-  </div>
-</section>
-
-<section>
-  <div class="card">
-    <div class="toolbar">
-      <h2>لیست درخواست‌ها</h2>
-      <button id="clearAll" class="btn-small danger">حذف همه</button>
-    </div>
-    <div id="list"></div>
-  </div>
-</section>
-
+<html lang="fa" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>مرکز مدیریت — Network Home</title><link rel="stylesheet" href="style.css"><link rel="icon" href="favicon.svg"></head>
+<body><nav class="navbar"><div class="logo">NETWORK <span>• CONTROL</span></div><ul><li><a href="index.html">سایت</a></li><li><a href="analytics.html">تحلیل</a></li></ul><button id="logout" class="btn-small danger">خروج</button></nav>
+<section class="hero" style="min-height:42vh"><div class="hero-content"><div class="eyebrow">CONTROL CENTER</div><h1>مرکز مدیریت</h1><p id="identity">در حال بررسی نشست...</p></div></section>
+<section class="container"><div class="toolbar"><div><h2>درخواست‌های مشتریان</h2><p class="muted">مدیریت امن و مستقیم درخواست‌های ثبت‌شده.</p></div><button id="clearAll" class="btn-small danger">حذف همه</button></div><div id="list" class="grid"></div></section>
 <script>
-let csrfToken = "";
-
-async function loadCsrf() {
-  const r = await fetch("/api/auth/csrf", { credentials: "same-origin" });
-  const data = await r.json();
-  if (!r.ok) throw new Error(data.error || "CSRF unavailable");
-  csrfToken = data.csrfToken;
-}
-
-async function api(url, options = {}) {
-  const headers = { ...(options.headers || {}) };
-  if (options.method && options.method !== "GET") headers["X-CSRF-Token"] = csrfToken;
-  const r = await fetch(url, { ...options, credentials: "same-origin", headers });
-  const data = r.status === 204 ? null : await r.json();
-  if (!r.ok) throw new Error(data?.error || "request failed");
-  return data;
-}
-
-function escapeHtml(value) {
-  return String(value).replace(/[&<>"']/g, (c) => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
-  }[c]));
-}
-
-async function loadRequests() {
-  const data = await api("/api/request/");
-  const list = document.getElementById("list");
-  if (!data.requests.length) {
-    list.innerHTML = "<p>هیچ درخواستی ثبت نشده است</p>";
-    return;
-  }
-  list.innerHTML = data.requests.map((r) => `
-    <div class="card" style="margin:10px 0;">
-      <p><b>#ID:</b> ${escapeHtml(r.id)}</p>
-      <p><b>نام:</b> ${escapeHtml(r.name)}</p>
-      <p><b>شماره:</b> ${escapeHtml(r.phone)}</p>
-      <p><b>خدمت:</b> ${escapeHtml(r.service)}</p>
-      <p><b>توضیحات:</b> ${escapeHtml(r.message)}</p>
-      <p><b>تاریخ:</b> ${escapeHtml(r.created_at)}</p>
-      <button class="btn-small danger" onclick="deleteRequest(${Number(r.id)})">حذف</button>
-    </div>
-  `).join("");
-}
-
-async function deleteRequest(id) {
-  await api("/api/request/" + encodeURIComponent(id), { method: "DELETE" });
-  await loadRequests();
-}
-
-async function clearAll() {
-  if (!confirm("هل أنت متأكد من حذف كل الطلبات؟")) return;
-  await api("/api/request/", { method: "DELETE" });
-  await loadRequests();
-}
-
-async function logout() {
-  await api("/api/auth/logout", { method: "POST" });
-  window.location.href = "admin.html";
-}
-
-async function boot() {
-  try {
-    const me = await api("/api/auth/me");
-    if (me.user.role !== "admin") throw new Error("forbidden");
-    document.getElementById("identity").textContent = "المستخدم: " + me.user.username;
-    await loadCsrf();
-    await loadRequests();
-  } catch {
-    window.location.href = "admin.html";
-  }
-}
-
-document.getElementById("logout").addEventListener("click", logout);
-document.getElementById("clearAll").addEventListener("click", clearAll);
-boot();
-</script>
-</body>
-</html>
+let csrfToken="";
+async function loadCsrf(){const r=await fetch("/api/auth/csrf",{credentials:"same-origin"}),d=await r.json();if(!r.ok)throw new Error();csrfToken=d.csrfToken}
+async function api(url,o={}){const h={...(o.headers||{})};if(o.method&&o.method!=="GET")h["X-CSRF-Token"]=csrfToken;const r=await fetch(url,{...o,credentials:"same-origin",headers:h}),d=r.status===204?null:await r.json();if(!r.ok)throw new Error(d?.error||"request failed");return d}
+function esc(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]))}
+async function loadRequests(){const d=await api("/api/request/"),l=document.getElementById("list");l.innerHTML=d.requests.length?d.requests.map(r=>`<article class="card"><p class="muted">#${esc(r.id)}</p><h3>${esc(r.name)}</h3><p>${esc(r.service)} · ${esc(r.phone)}</p><p class="muted">${esc(r.message)}</p><small class="muted">${esc(r.created_at)}</small><br><button class="btn-small danger" onclick="deleteRequest(${Number(r.id)})">حذف</button></article>`).join(""):"<div class='card'><h3>لا توجد طلبات</h3><p class='muted'>ستظهر الطلبات الجديدة هنا.</p></div>"}
+async function deleteRequest(id){await api("/api/request/"+encodeURIComponent(id),{method:"DELETE"});loadRequests()}
+async function clearAll(){if(confirm("هل أنت متأكد من حذف كل الطلبات؟")){await api("/api/request/",{method:"DELETE"});loadRequests()}}
+async function logout(){await api("/api/auth/logout",{method:"POST"});location.href="admin.html"}
+async function boot(){try{const me=await api("/api/auth/me");if(me.user.role!=="admin")throw 0;identity.innerHTML='<span class="status-dot"></span>متصل — '+esc(me.user.username);await loadCsrf();await loadRequests()}catch{location.href="admin.html"}}
+logout.onclick=logout;clearAll.onclick=clearAll;boot()
+</script></body></html>
