@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy import BigInteger, Boolean, Column, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 from .db import Base
 
@@ -23,7 +23,7 @@ class Transfer(Base):
     stored_filename = Column(String(255), nullable=True)
     content_type = Column(String(255), nullable=True)
     sha256 = Column(String(64), nullable=True)
-    byte_size = Column(Integer, nullable=True)
+    byte_size = Column(BigInteger, nullable=True)
     error_message = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
