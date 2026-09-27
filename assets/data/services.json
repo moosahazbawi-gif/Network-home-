@@ -1,10 +1,27 @@
 [
   {
-    "title": "Network Infrastructure",
-    "desc": "Design and implementation of secure networks"
+    "provider": "Panther",
+    "title": "Panther VPN",
+    "desc": "Secure VPN connectivity and access service"
   },
   {
-    "title": "Server Management",
-    "desc": "Cloud and local server administration"
+    "provider": "Panther",
+    "title": "Panther VPS",
+    "desc": "Virtual private server infrastructure"
+  },
+  {
+    "provider": "Panther",
+    "title": "Panther AI",
+    "desc": "AI service layer within Panther"
+  },
+  {
+    "provider": "Panther",
+    "title": "Panther Infrastructure",
+    "desc": "Infrastructure and operations services"
+  },
+  {
+    "provider": "Network Home",
+    "title": "CloudBell Pro",
+    "desc": "Independent secure download management service"
   }
 ]
