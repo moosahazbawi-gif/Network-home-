@@ -1,59 +1,10 @@
 <!DOCTYPE html>
-<html lang="fa">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Login | Network Home</title>
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-<section class="container">
-  <div class="card">
-    <h2>ورود مدیر</h2>
-    <input id="user" autocomplete="username" placeholder="Username">
-    <br><br>
-    <input id="pass" type="password" autocomplete="current-password" placeholder="Password">
-    <br><br>
-    <button id="loginButton" class="btn">ورود</button>
-    <p id="error" role="alert"></p>
-  </div>
-</section>
+<html lang="fa" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ورود مدیریت — Network Home</title><link rel="stylesheet" href="style.css"></head>
+<body><nav class="navbar"><div class="logo">NETWORK <span>• HOME</span></div><a href="index.html">بازگشت به سایت</a></nav>
+<section class="container"><div class="card auth-card"><div class="eyebrow">SECURE ACCESS</div><h1>ورود به مرکز مدیریت</h1><p class="muted">دسترسی به درخواست‌ها و کنترل سامانه.</p><br><input id="user" autocomplete="username" placeholder="نام کاربری"><input id="pass" type="password" autocomplete="current-password" placeholder="رمز عبور"><button id="loginButton" class="btn primary" style="width:100%;margin-top:10px">ورود امن</button><p id="error" role="alert" class="muted" style="margin-top:14px"></p></div></section>
 <script>
-let csrfToken = "";
-
-async function getCsrf() {
-  const r = await fetch("/api/auth/csrf", { credentials: "same-origin" });
-  const data = await r.json();
-  if (!r.ok) throw new Error(data.error || "خطا در دریافت CSRF");
-  csrfToken = data.csrfToken;
-}
-
-async function login() {
-  const error = document.getElementById("error");
-  error.textContent = "";
-  try {
-    if (!csrfToken) await getCsrf();
-    const r = await fetch("/api/auth/login", {
-      method: "POST",
-      credentials: "same-origin",
-      headers: { "Content-Type": "application/json", "X-CSRF-Token": csrfToken },
-      body: JSON.stringify({
-        username: document.getElementById("user").value,
-        password: document.getElementById("pass").value
-      })
-    });
-    const data = await r.json();
-    if (!r.ok) throw new Error(data.error || "ورود ناموفق");
-    window.location.href = "crm-dashboard.html";
-  } catch (err) {
-    error.textContent = err.message;
-  }
-}
-
-document.getElementById("loginButton").addEventListener("click", login);
-getCsrf().catch((err) => {
-  document.getElementById("error").textContent = err.message;
-});
-</script>
-</body>
-</html>
+let csrfToken="";
+async function getCsrf(){const r=await fetch("/api/auth/csrf",{credentials:"same-origin"}),d=await r.json();if(!r.ok)throw new Error(d.error||"خطا");csrfToken=d.csrfToken}
+async function login(){const e=document.getElementById("error");e.textContent="";try{if(!csrfToken)await getCsrf();const r=await fetch("/api/auth/login",{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json","X-CSRF-Token":csrfToken},body:JSON.stringify({username:user.value,password:pass.value})}),d=await r.json();if(!r.ok)throw new Error(d.error||"ورود ناموفق");location.href="crm-dashboard.html"}catch(x){e.textContent=x.message}}
+loginButton.onclick=login;getCsrf().catch(x=>error.textContent=x.message)
+</script></body></html>
