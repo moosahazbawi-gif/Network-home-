@@ -33,6 +33,23 @@ async function initDb() {
 
     CREATE INDEX IF NOT EXISTS customer_requests_created_at_idx
       ON customer_requests (created_at DESC);
+
+    CREATE TABLE IF NOT EXISTS vpn_customers (
+      id BIGSERIAL PRIMARY KEY,
+      email TEXT NOT NULL UNIQUE,
+      status TEXT NOT NULL DEFAULT 'trial' CHECK (status IN ('trial','active')),
+      trial_started_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      trial_ends_at TIMESTAMPTZ NOT NULL DEFAULT (NOW() + INTERVAL '3 days'),
+      active_until TIMESTAMPTZ,
+      access_token TEXT NOT NULL UNIQUE,
+      stripe_checkout_session_id TEXT,
+      stripe_payment_intent_id TEXT,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE INDEX IF NOT EXISTS vpn_customers_status_idx
+      ON vpn_customers (status, trial_ends_at, active_until);
   `);
 }
 
