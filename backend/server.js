@@ -28,6 +28,7 @@ const allowedOrigins = (process.env.CORS_ORIGIN || "")
 
 app.disable("x-powered-by");
 app.use(helmet());
+app.use("/api/stripe", stripeRoutes);
 app.use(cors({
   origin(origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
