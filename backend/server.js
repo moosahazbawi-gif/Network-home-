@@ -64,7 +64,6 @@ app.get("/health", (_req, res) => res.json({ ok: true, service: "network-home-ba
 app.use("/api/auth", authRoutes);
 app.use("/api/request", requestRoutes);
 app.use("/api/vpn", vpnRoutes);
-app.use("/api/stripe", stripeRoutes);
 app.use(pantherGateway);
 
 app.use((err, _req, res, _next) => {
