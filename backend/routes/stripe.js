@@ -18,7 +18,7 @@ router.post("/webhook", express.raw({ type: "application/json" }), async (req, r
       if (session.payment_status === "paid" && session.metadata?.service === "PX2.VPN") {
         const customerId = Number(session.metadata.vpn_customer_id);
         if (Number.isSafeInteger(customerId) && customerId > 0) {
-          await pool.query(`UPDATE vpn_customers SET status='active', active_until=NOW()+INTERVAL '30 days', stripe_payment_intent_id=$1, updated_at=NOW() WHERE id=$2`, [session.payment_intent || null, customerId]);
+          await pool.query(`UPDATE vpn_customers SET status='active', active_until=NOW()+INTERVAL '1 year', stripe_payment_intent_id=$1, updated_at=NOW() WHERE id=$2`, [session.payment_intent || null, customerId]);
         }
       }
     }
