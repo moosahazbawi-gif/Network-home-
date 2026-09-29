@@ -10,6 +10,8 @@ const { bootstrapAdmin } = require("./auth");
 const authRoutes = require("./routes/auth");
 const requestRoutes = require("./routes/requests");
 const pantherGateway = require("./panther-gateway");
+const vpnRoutes = require("./routes/vpn");
+const stripeRoutes = require("./routes/stripe");
 
 const app = express();
 const isProduction = process.env.NODE_ENV === "production";
@@ -60,6 +62,8 @@ app.use(session({
 app.get("/health", (_req, res) => res.json({ ok: true, service: "network-home-backend" }));
 app.use("/api/auth", authRoutes);
 app.use("/api/request", requestRoutes);
+app.use("/api/vpn", vpnRoutes);
+app.use("/api/stripe", stripeRoutes);
 app.use(pantherGateway);
 
 app.use((err, _req, res, _next) => {
