@@ -22,5 +22,5 @@ test("status transitions from trial to expired and active", () => {
   const now = new Date("2026-09-30T00:00:00Z");
   assert.equal(getStatus({ status:"trial", trial_ends_at:"2026-10-01T00:00:00Z", active_until:null }, now).state, "trial");
   assert.equal(getStatus({ status:"trial", trial_ends_at:"2026-09-29T00:00:00Z", active_until:null }, now).state, "expired");
-  assert.equal(getStatus({ status:"active", trial_ends_at:"2026-09-29T00:00:00Z", active_until:"2026-10-30T00:00:00Z" }, now).state, "active");
+  assert.equal(getStatus({ status:"active", trial_ends_at:"2026-09-29T00:00:00Z", active_until:"2027-09-30T00:00:00Z" }, now).state, "active");
 });
