@@ -2,9 +2,9 @@ services:
   cloudbell-postgres:
     image: postgres:16-alpine
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:?set POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER:?set POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-cloudbell}
+      POSTGRES_USER: ${POSTGRES_USER:-cloudbell}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-secretpassword123}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -29,7 +29,7 @@ services:
     env_file:
       - .env
     environment:
-      DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER:?set POSTGRES_USER}:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@cloudbell-postgres:5432/${POSTGRES_DB:?set POSTGRES_DB}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-cloudbell}:${POSTGRES_PASSWORD:-secretpassword123}@cloudbell-postgres:5432/${POSTGRES_DB:-cloudbell}
       REDIS_URL: redis://cloudbell-redis:6379/0
       CELERY_BROKER_URL: redis://cloudbell-redis:6379/0
       CELERY_RESULT_BACKEND: redis://cloudbell-redis:6379/1
@@ -52,7 +52,7 @@ services:
     env_file:
       - .env
     environment:
-      DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER:?set POSTGRES_USER}:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@cloudbell-postgres:5432/${POSTGRES_DB:?set POSTGRES_DB}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-cloudbell}:${POSTGRES_PASSWORD:-secretpassword123}@cloudbell-postgres:5432/${POSTGRES_DB:-cloudbell}
       REDIS_URL: redis://cloudbell-redis:6379/0
       CELERY_BROKER_URL: redis://cloudbell-redis:6379/0
       CELERY_RESULT_BACKEND: redis://cloudbell-redis:6379/1
