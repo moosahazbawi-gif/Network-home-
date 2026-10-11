@@ -6,26 +6,30 @@ ENV_FILE="$ROOT_DIR/.env"
 EXAMPLE_FILE="$ROOT_DIR/.env.example"
 
 if [ ! -f "$EXAMPLE_FILE" ]; then
-  printf '%s
-' "ملف .env.example غير موجود."
+  printf '%s\n' "خطا: فایل .env.example موجود نیست."
   exit 1
 fi
 
 if [ ! -f "$ENV_FILE" ]; then
   cp "$EXAMPLE_FILE" "$ENV_FILE"
+  
+  # تولید رمزهای تصادفی
   SECRET=$(openssl rand -hex 32)
   POSTGRES_PASSWORD=$(openssl rand -hex 24)
   BOOTSTRAP_ADMIN_PASSWORD=$(openssl rand -hex 24)
+  
+  # اعمال تغییرات در فایل .env
+  # الگو: s/^کلید=.*/کلید=مقدار جدید/
   sed -i "s/^SECRET_KEY=.*/SECRET_KEY=$SECRET/" "$ENV_FILE"
   sed -i "s/^POSTGRES_PASSWORD=.*/POSTGRES_PASSWORD=$POSTGRES_PASSWORD/" "$ENV_FILE"
   sed -i "s/^BOOTSTRAP_ADMIN_PASSWORD=.*/BOOTSTRAP_ADMIN_PASSWORD=$BOOTSTRAP_ADMIN_PASSWORD/" "$ENV_FILE"
-  sed -i "s#^DATABASE_URL=.*#DATABASE_URL=postgresql+psycopg2://cloudbell:$POSTGRES_PASSWORD@cloudbell-postgres:5432/cloudbell#" "$ENV_FILE"
-  printf '%s
-' "تم إنشاء .env. عدل BOOTSTRAP_ADMIN_EMAIL و BOOTSTRAP_ADMIN_PASSWORD قبل التشغيل."
+  
+  # برای آدرس دیتابیس چون کاراکتر / دارد، از جداکننده # استفاده می‌کنیم
+  sed -i "s#^DATABASE_URL=.*#DATABASE_URL=postgresql://user:password@db:5432/dbname#" "$ENV_FILE"
+  
+  printf '%s\n' "فایل .env ساخته شد. لطفاً BOOTSTRAP_ADMIN_EMAIL را قبل از اجرا چک کن."
 else
-  printf '%s
-' ".env موجود بالفعل."
+  printf '%s\n' ".env از قبل موجود است."
 fi
 
-printf '%s
-' "الخطوة التالية: راجع .env ثم شغّل: docker compose up -d --build"
+printf '%s\n' "آماده برای اجرا: docker compose up -d --build"
