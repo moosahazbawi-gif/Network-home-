@@ -7,21 +7,32 @@ from .config import settings
 
 
 # Password hashing
-#
 # مسیر اصلی: pwdlib + Argon2
-# مسیر جایگزین: Passlib در صورتی که pwdlib نصب نشده باشد.
+# مسیر جایگزین: Passlib در صورت نصب نبودن pwdlib
 try:
     from pwdlib import PasswordHash
 
     _password_hasher = PasswordHash.recommended()
 
     def hash_password(password: str) -> str:
+        """هش کردن رمز عبور با الگوریتم امن Argon2."""
+        if not isinstance(password, str) or not password:
+            raise ValueError("Password must be a non-empty string")
+
         return _password_hasher.hash(password)
 
     def verify_password(password: str, password_hash: str) -> bool:
+        """بررسی رمز عبور در برابر هش ذخیره‌شده."""
+        if (
+            not isinstance(password, str)
+            or not isinstance(password_hash, str)
+            or not password_hash
+        ):
+            return False
+
         try:
             return _password_hasher.verify(password, password_hash)
-        except (ValueError, TypeError):
+        except (TypeError, ValueError):
             return False
 
 except ImportError:
@@ -33,12 +44,24 @@ except ImportError:
     )
 
     def hash_password(password: str) -> str:
+        """هش کردن رمز عبور با Passlib."""
+        if not isinstance(password, str) or not password:
+            raise ValueError("Password must be a non-empty string")
+
         return _password_context.hash(password)
 
     def verify_password(password: str, password_hash: str) -> bool:
+        """بررسی رمز عبور در برابر هش ذخیره‌شده."""
+        if (
+            not isinstance(password, str)
+            or not isinstance(password_hash, str)
+            or not password_hash
+        ):
+            return False
+
         try:
             return _password_context.verify(password, password_hash)
-        except (ValueError, TypeError):
+        except (TypeError, ValueError):
             return False
 
 
@@ -47,8 +70,9 @@ def create_access_token(
     expires_minutes: Optional[int] = None,
 ) -> str:
     """
-    ساخت توکن JWT برای کاربر.
-    subject در این پروژه معمولاً ایمیل کاربر است.
+    ساخت توکن JWT.
+
+    subject معمولاً ایمیل یا شناسه کاربر است.
     """
     if not isinstance(subject, str) or not subject.strip():
         raise ValueError("JWT subject must be a non-empty string")
@@ -59,7 +83,7 @@ def create_access_token(
         else expires_minutes
     )
 
-    if minutes <= 0:
+    if not isinstance(minutes, int) or minutes <= 0:
         raise ValueError("Token expiration must be greater than zero")
 
     expire_at = datetime.now(timezone.utc) + timedelta(minutes=minutes)
@@ -78,10 +102,10 @@ def create_access_token(
 
 def decode_token(token: str) -> str:
     """
-    اعتبارسنجی و decode کردن JWT.
+    اعتبارسنجی توکن JWT و برگرداندن subject.
 
-    در صورت نامعتبر بودن توکن، منقضی شدن آن،
-    یا نبودن subject، خطای JWTError ایجاد می‌شود.
+    در صورت نامعتبر بودن، منقضی شدن یا ناقص بودن توکن،
+    خطای JWTError ایجاد می‌شود تا در main.py مدیریت شود.
     """
     if not isinstance(token, str) or not token.strip():
         raise JWTError("Empty token")
