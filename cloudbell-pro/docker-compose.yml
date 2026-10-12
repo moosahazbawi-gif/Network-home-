@@ -1,87 +1,86 @@
-services:
-  cloudbell-postgres:
-    image: postgres:16-alpine
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-cloudbell}
-      POSTGRES_USER: ${POSTGRES_USER:-cloudbell}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-secretpassword123}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-cloudbell} -d ${POSTGRES_DB:-cloudbell}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+version: '3.8'
 
-  cloudbell-redis:
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: cloudbell_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: cloudbell
+      POSTGRES_PASSWORD: strong_password_here
+      POSTGRES_DB: cloudbell_db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - cloudbell_net
+    # پورت به هاست بایند نمی‌شود تا تداخل ایجاد نکند
+
+  redis:
     image: redis:7-alpine
+    container_name: cloudbell_redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
     volumes:
       - redis_data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    networks:
+      - cloudbell_net
 
-  cloudbell-backend:
+  backend:
     build:
       context: ./backend
-    env_file:
-      - .env
+      dockerfile: Dockerfile
+    container_name: cloudbell_backend
+    restart: unless-stopped
     environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER:-cloudbell}:${POSTGRES_PASSWORD:-secretpassword123}@cloudbell-postgres:5432/${POSTGRES_DB:-cloudbell}
-      REDIS_URL: redis://cloudbell-redis:6379/0
-      CELERY_BROKER_URL: redis://cloudbell-redis:6379/0
-      CELERY_RESULT_BACKEND: redis://cloudbell-redis:6379/1
-      DATA_DIR: ${DATA_DIR:-/data}
-    volumes:
-      - cloudbell_data:/data
+      - DATABASE_URL=postgresql://cloudbell:strong_password_here@db:5432/cloudbell_db
+      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=change_this_to_a_secure_random_key
+      - ENVIRONMENT=production
     depends_on:
-      cloudbell-postgres:
-        condition: service_healthy
-      cloudbell-redis:
-        condition: service_healthy
-    command: >
-      sh -c "python -m app.db && uvicorn app.main:app --host 0.0.0.0 --port 8000"
-    expose:
-      - "8000"
+      - db
+      - redis
+    volumes:
+      - downloads_data:/app/downloads
+    networks:
+      - cloudbell_net
 
-  cloudbell-worker:
+  worker:
     build:
       context: ./backend
-    env_file:
-      - .env
+      dockerfile: Dockerfile
+    container_name: cloudbell_worker
+    restart: unless-stopped
+    command: celery -A tasks.celery_app worker --loglevel=info
     environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER:-cloudbell}:${POSTGRES_PASSWORD:-secretpassword123}@cloudbell-postgres:5432/${POSTGRES_DB:-cloudbell}
-      REDIS_URL: redis://cloudbell-redis:6379/0
-      CELERY_BROKER_URL: redis://cloudbell-redis:6379/0
-      CELERY_RESULT_BACKEND: redis://cloudbell-redis:6379/1
-      DATA_DIR: ${DATA_DIR:-/data}
+      - DATABASE_URL=postgresql://cloudbell:strong_password_here@db:5432/cloudbell_db
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
     volumes:
-      - cloudbell_data:/data
-    depends_on:
-      cloudbell-postgres:
-        condition: service_healthy
-      cloudbell-redis:
-        condition: service_healthy
-    command: celery -A app.tasks.celery_app worker --loglevel=info
+      - downloads_data:/app/downloads
+    networks:
+      - cloudbell_net
 
-  cloudbell-nginx:
-    image: nginx:1.27-alpine
-    depends_on:
-      - cloudbell-backend
+  nginx:
+    image: nginx:alpine
+    container_name: cloudbell_web
+    restart: unless-stopped
     ports:
-      - "8088:80"
+      - "8090:80"  # پورت 8090 بیرون وصل می‌شود به پورت 80 داخل این کانتینر
     volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - ./frontend:/usr/share/nginx/html:ro
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/healthz"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
+    depends_on:
+      - backend
+    networks:
+      - cloudbell_net
 
 volumes:
-  postgres_data:
+  db_data:
   redis_data:
-  cloudbell_data:
+  downloads_data:
+
+networks:
+  cloudbell_net:
+    driver: bridge
